@@ -1,9 +1,9 @@
 package Card_Game;
 
 import Card_Game.CardContainers.*;
+import Card_Game.Cards.Card;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GameComponents {
 
@@ -36,19 +36,32 @@ public class GameComponents {
         return players.getOrDefault(player, null);
     }
 
-    public CardContainer getPlayerDeck(Player player) {
-        return players.get(player).get(Deck.class);
+    public Deck getPlayerDeck(Player player) {
+        return (Deck) players.get(player).get(Deck.class);
     }
 
-    public CardContainer getPlayerDiscard(Player player) {
-        return players.get(player).get(Discard.class);
+    public Discard getPlayerDiscard(Player player) {
+        return (Discard) players.get(player).get(Discard.class);
     }
 
-    public CardContainer getPlayerField(Player player) {
-        return players.get(player).get(Field.class);
+    public Field getPlayerField(Player player) {
+        return (Field) players.get(player).get(Field.class);
     }
 
-    public CardContainer getPlayerHand(Player player) {
-        return players.get(player).get(Hand.class);
+    public Hand getPlayerHand(Player player) {
+        return (Hand) players.get(player).get(Hand.class);
+    }
+
+    public List<Card> getAllFieldCards() {
+
+        List<CardContainer> fields = new ArrayList<>();
+        players.values().forEach(map -> fields.add(map.get(Field.class)));
+        List<Card> cards = new ArrayList<>();
+        fields.forEach(field -> {
+            cards.addAll(Arrays.asList(((Field) field).getBottomRow()));
+            cards.addAll(Arrays.asList(((Field) field).getMonsters()));
+        });
+        cards.removeIf(Objects::isNull);
+        return cards;
     }
 }

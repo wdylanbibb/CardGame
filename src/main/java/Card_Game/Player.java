@@ -7,6 +7,7 @@ import Card_Game.CardContainers.Hand;
 import Card_Game.Cards.Card;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class Player {
@@ -44,7 +45,7 @@ public class Player {
         if(card.getCost() > mana){
             return false;
         }else{
-            hand.play(card);
+            if (!field.play(card, new Random().nextInt(5), hand)) return false;
             mana -= card.getCost();
             return true;
         }

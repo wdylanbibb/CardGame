@@ -17,6 +17,10 @@ dependencies {
     
     // gson
     implementation 'com.google.code.gson:gson:2.8.6'
+    
+    // apache commons
+    implementation 'org.apache.commons:commons-lang3:3.0'
+
 }
 
 application {
