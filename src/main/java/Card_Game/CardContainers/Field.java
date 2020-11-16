@@ -42,8 +42,10 @@ public class Field implements CardContainer {
 
     public void checkField() {
         for (int i = 0; i < monsters.length; i++) {
-            if (!monsters[i].isDead()) {
-                monsters[i] = null;
+            if (monsters[i] != null) {
+                if (!monsters[i].isDead()) {
+                    monsters[i] = null;
+                }
             }
         }
     }
