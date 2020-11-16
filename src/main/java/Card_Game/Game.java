@@ -18,6 +18,7 @@ public class Game {
         this.scanner = scanner;
 
         players = new Player[]{new Player("deck1"), new Player("deck1")};
+        GameComponents.newInstance(players);
         board = new Field[]{players[0].getField(), players[1].getField()};
     }
 

@@ -47,4 +47,8 @@ public class Monster extends Card {
     public void setDef(int def) {
         this.def = def;
     }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 }
