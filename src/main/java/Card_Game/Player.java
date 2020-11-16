@@ -24,7 +24,7 @@ public class Player {
     public Player(String deckName) throws IOException {
         hand = new Hand();
         deck = new Deck();
-        DeckFiller.fillDeck(deckName, deck, this);
+        JsonAccessor.fillDeck(deckName, deck, this);
         deck.shuffle();
         discard = new Discard();
         field = new Field(5);

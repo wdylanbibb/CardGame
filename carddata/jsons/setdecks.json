@@ -1,0 +1,11 @@
+{
+  "players":
+  [
+    {
+      "deck": "random"
+    },
+    {
+      "deck": "random"
+    }
+  ]
+}

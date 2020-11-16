@@ -1,13 +1,15 @@
 package Card_Game.Cards;
 
+import java.awt.*;
+
 public class Monster extends Card {
 
     private int atk;
     private int def;
     private boolean alive = true;
 
-    public Monster(String name, int cost, int atk, int def, String description) {
-        super(name, cost, description);
+    public Monster(String name, int cost, int atk, int def, String description, Image image) {
+        super(name, cost, description, image);
         this.atk = atk;
         this.def = def;
     }
