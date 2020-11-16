@@ -23,6 +23,7 @@ public class DeckFiller {
                 if (((JsonObject) jsonElement).get("type").getAsString().equals("monster")) {
                     Monster monster = gson.fromJson(jsonElement, Monster.class);
                     monster.setPlayer(player);
+                    monster.setAlive(true);
                     deck.add(monster);
                 } else {
                     Card card = gson.fromJson(jsonElement, Card.class);

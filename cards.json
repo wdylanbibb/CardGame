@@ -5,31 +5,43 @@
       "name": "Dylan",
       "cost": 1,
       "atk": 2,
-      "def": 2
+      "def": 2,
+      "description": "monk"
     },
     {
       "type": "monster",
       "name": "Elliot",
       "cost": 2,
       "atk": 2,
-      "def": 2
+      "def": 2,
+      "description": "epic boy"
     },
     {
       "type": "spell",
       "name": "Jeff",
-      "cost": 3
+      "cost": 3,
+      "description": "oh no penut"
     },
 
     {
       "type": "trap",
       "name": "Aakash",
-      "cost": 3
+      "cost": 3,
+      "description": "he is comin"
     },
 
     {
       "type": "gamer",
       "name": "Pickle",
-      "cost": 3
+      "cost": 3,
+      "description": "gamer"
+    },
+
+    {
+      "type": "mongrel",
+      "name": "Jacob",
+      "cost": 0,
+      "description": "he is jacob"
     }
   ]
 }

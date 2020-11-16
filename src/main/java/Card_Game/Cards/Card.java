@@ -10,10 +10,12 @@ public class Card implements Playable{
     private String name;
     private int cost;
     private Player player;
+    private String description;
 
-    public Card( @Nonnull String name, int cost) {
+    public Card(@Nonnull String name, int cost, String description) {
         this.name = name;
         this.cost = cost;
+        this.description = description;
     }
 
     @Override
@@ -44,5 +46,13 @@ public class Card implements Playable{
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

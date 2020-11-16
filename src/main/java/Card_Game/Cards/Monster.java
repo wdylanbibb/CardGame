@@ -4,13 +4,12 @@ public class Monster extends Card {
 
     private int atk;
     private int def;
-    private boolean alive;
+    private boolean alive = true;
 
-    public Monster(String name, int cost, int atk, int def) {
-        super(name, cost);
+    public Monster(String name, int cost, int atk, int def, String description) {
+        super(name, cost, description);
         this.atk = atk;
         this.def = def;
-        alive = true;
     }
 
     @Override
@@ -46,5 +45,9 @@ public class Monster extends Card {
 
     public void setDef(int def) {
         this.def = def;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 }

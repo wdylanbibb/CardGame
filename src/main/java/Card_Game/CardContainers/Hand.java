@@ -9,6 +9,7 @@ public class Hand extends ArrayList<Card> implements CardContainer {
         if (contains(card)) {
             remove(card);
             card.play();
+            return true;
         }
         return false;
     }

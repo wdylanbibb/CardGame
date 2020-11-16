@@ -16,10 +16,10 @@ public class Field implements CardContainer {
         bottomRow = new Card[len];
     }
 
-    public boolean play(Card card, int pos) {
+    public boolean play(Card card, int pos, Hand hand) {
         if (card instanceof Monster && monsters[pos] == null) {
+            if (!hand.play(card)) return false;
             monsters[pos] = (Monster) card;
-            card.play();
             return true;
         }
         return false;
@@ -48,5 +48,13 @@ public class Field implements CardContainer {
                 }
             }
         }
+    }
+
+    public Card[] getBottomRow() {
+        return bottomRow;
+    }
+
+    public Monster[] getMonsters() {
+        return monsters;
     }
 }
