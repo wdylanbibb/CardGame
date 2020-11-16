@@ -1,0 +1,35 @@
+{
+  "deck1": [
+    {
+      "type": "monster",
+      "name": "Dylan",
+      "cost": 1,
+      "atk": 2,
+      "def": 2
+    },
+    {
+      "type": "monster",
+      "name": "Elliot",
+      "cost": 2,
+      "atk": 2,
+      "def": 2
+    },
+    {
+      "type": "spell",
+      "name": "Jeff",
+      "cost": 3
+    },
+
+    {
+      "type": "trap",
+      "name": "Aakash",
+      "cost": 3
+    },
+
+    {
+      "type": "gamer",
+      "name": "Pickle",
+      "cost": 3
+    }
+  ]
+}

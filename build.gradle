@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+
+    id 'application'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // This dependency is used by the application.
+    implementation 'com.google.guava:guava:29.0-jre'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
+    
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+application {
+    mainClassName = 'Card_Game.Game'
+}
