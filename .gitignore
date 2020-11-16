@@ -7,6 +7,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/vcs.xml
+.idea/**/compiler.xml
+.idea/**/misc.xml
 
 # Generated files
 .idea/**/contentModel.xml
