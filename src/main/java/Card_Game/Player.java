@@ -36,9 +36,14 @@ public class Player {
         hand.add(deck.draw());
     }
 
-    public void draw() {
-        hand.add(deck.draw());
-        mana--;
+    public Card draw() {
+        if(deck.size() > 0) {
+            hand.add(deck.draw());
+            mana--;
+            return hand.get(hand.size() - 1);
+        }else{
+            return null;
+        }
     }
 
     public boolean play(Card card) {
@@ -52,7 +57,6 @@ public class Player {
     }
 
     public void endTurn() {
-        mana = 0;
         field.checkField();
         if (deck.isEmpty()) {
             deck.addAll(discard.reshuffle());
