@@ -89,11 +89,12 @@ public class JsonAccessor {
                             e.printStackTrace();
                         }
                     }
-                }
-                try {
-                    decks.add(pickRandomDeck());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    try {
+                        decks.add(pickRandomDeck());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
