@@ -33,60 +33,66 @@ public class Game {
         game.run();
     }
 
-    public void run(){
-        // Players set, hands set, board set
-        int playerTurn = 0;
-        String statementIn = "";
-        while(!statementIn.equalsIgnoreCase("quit")) {
-            while (players[playerTurn].getMana() > 0) {
-                System.out.println("Player " + (playerTurn + 1) + "'s Turn" + "\nYour hand:");
-                printHand(players[playerTurn]);
-                int finalPlayerTurn = playerTurn;
-                printBoard(players[playerTurn], Arrays.stream(players).filter(player -> players[finalPlayerTurn] != player).collect(Collectors.toList()).get(0));
-                statementIn = scanner.nextLine();
-                String word1 = null;
-                String word2 = null;
+    public ArrayList<String> parser(){
+        Scanner scanner = new Scanner(System.in);
+        String statementIn = scanner.nextLine();
+        ArrayList<String> wordList = new ArrayList<>();
+        Scanner tokenizer = new Scanner(statementIn);
+        while(tokenizer.hasNext()){
+            wordList.add(tokenizer.next());
+        }
+        return wordList;
+    }
 
-                Scanner tokenizer = new Scanner(statementIn);
-                if (tokenizer.hasNext()) {
-                    word1 = tokenizer.next();
-                    if (tokenizer.hasNext()) {
-                        word2 = tokenizer.next();
-                    }
-                }
-                if (word1 != null) {
-                    switch (word1) {
+    public void run(){
+
+        int currPlayer = 0;
+        String in = "";
+        do{
+            boolean endTurn = false;
+            boolean beginningTurn = true;
+            players[currPlayer].setMana(Player.MAX_MANA);
+            while (!endTurn){
+                endTurn = false;
+                if (beginningTurn) printBoard(players[currPlayer], players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
+                System.out.print(beginningTurn ? "Player " + (currPlayer + 1) + "'s Turn\n" : "");
+                System.out.println(players[currPlayer].getMana() + " Mana Left");
+                System.out.print(beginningTurn ? "Your hand:\n" : "");
+                if (beginningTurn) printHand(players[currPlayer]);
+                beginningTurn = false;
+
+                ArrayList<String> words = parser();
+                if (words.get(0) != null){
+                    switch (words.get(0)) {
                         case "play":
                             try {
-                                Card cardPlayed = parseCardFromHand(players[playerTurn], word2);
-                                playCard(players[playerTurn], cardPlayed);
-                            }catch (IndexOutOfBoundsException e){
+                                Card cardPlayed = parseCardFromHand(players[currPlayer], words.get(1));
+                                playCard(players[currPlayer], cardPlayed);
+//                                printBoard(players[currPlayer], players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
+                            } catch (IndexOutOfBoundsException e) {
                                 System.out.println("Card not found");
                             }
                             break;
                         case "draw":
-                            players[playerTurn].draw();
+                            Card cardDrawn = players[currPlayer].draw();
+                            System.out.print(cardDrawn != null ? "You drew " + cardDrawn.getName() + "\n" : "");
                             break;
                         case "end":
-                            players[playerTurn].endTurn();
+                            endTurn = true;
                             break;
                         case "info":
-                            try {
-                                printCard(parseCardFromFieldOrHand(players[playerTurn], word2));
-                            } catch (NullPointerException | IndexOutOfBoundsException e) {
-                                System.out.println("Card not found");
-                            }
-                            break;
+                            System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
+                            System.out.println(players[currPlayer].getMana() + " Mana Left");
+                            System.out.print("Your hand:\n");
+                            printHand(players[currPlayer]);
                         default:
-                            // bad
+                            break;
                     }
-                } else {
-                    // bad
                 }
             }
-            players[playerTurn].setMana(Player.MAX_MANA);
-            playerTurn = playerTurn + 1 >= players.length ? 0 : playerTurn + 1;
-        }
+            currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
+        }while(true);
+
     }
 
     private Card parseCardFromHand(Player player, String words) {
@@ -115,16 +121,16 @@ public class Game {
 
     private void playCard(Player player, Card card) {
         if(player.play(card)){
-            System.out.println("Played card");
+            System.out.println("Played " + card.getName());
             printBoard(player, Arrays.stream(players).filter(p -> p != player).collect(Collectors.toList()).get(0));
         }else{
-            System.out.println("Did not play");
+            System.out.println("Did not play; Not enough mana. (Costs " + card.getCost() + " out of " + player.getMana() + " mana)");
         }
     }
 
     private void printBoard(Player current, Player opposite) {
-        Field oppField = GameComponents.getInstance().getPlayerField(opposite);
-        Field currField = GameComponents.getInstance().getPlayerField(current);
+        Field oppField = (Field) GameComponents.getInstance().getPlayerContainer(opposite, Field.class);
+        Field currField = (Field) GameComponents.getInstance().getPlayerContainer(current, Field.class);
         Card[] oppBack = oppField.getBottomRow();
         Card[] oppFront = oppField.getMonsters();
         Card[] currFront = currField.getMonsters();

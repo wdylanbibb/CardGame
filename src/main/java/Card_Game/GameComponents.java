@@ -36,24 +36,9 @@ public class GameComponents {
         return players.getOrDefault(player, null);
     }
 
-    public Deck getPlayerDeck(Player player) {
-        return (Deck) players.get(player).get(Deck.class);
-    }
-
-    public Discard getPlayerDiscard(Player player) {
-        return (Discard) players.get(player).get(Discard.class);
-    }
-
-    public Field getPlayerField(Player player) {
-        return (Field) players.get(player).get(Field.class);
-    }
-
-    public Hand getPlayerHand(Player player) {
-        return (Hand) players.get(player).get(Hand.class);
-    }
+    public CardContainer getPlayerContainer(Player player, Class<? extends CardContainer> container){ return players.get(player).get(container); }
 
     public List<Card> getAllFieldCards() {
-
         List<CardContainer> fields = new ArrayList<>();
         players.values().forEach(map -> fields.add(map.get(Field.class)));
         List<Card> cards = new ArrayList<>();
