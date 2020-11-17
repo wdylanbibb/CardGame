@@ -3,6 +3,7 @@ package Card_Game;
 
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
+import Card_Game.Cards.Monster;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -102,6 +103,26 @@ public class Game {
                                 System.out.println(players[currPlayer].getMana() + " Mana Left");
                                 System.out.print("Your hand:\n");
                                 printHand(players[currPlayer]);
+                            }
+                        case "attack":
+                            if(words.size() > 1){
+                                if(words.get(1).equalsIgnoreCase("help")){
+                                    System.out.println("'attack <friendly lane> <enemy lane>");
+                                }else{
+                                    if(words.size() > 2){
+                                        try{
+                                            Monster monster = players[currPlayer].getField().getMonsters()[Integer.parseInt(words.get(1))-1];
+                                            Monster target = players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1].getField().getMonsters()[Integer.parseInt(words.get(2))-1];
+                                            boolean killed = monster.attack(target);
+                                            System.out.println(monster.getName() + " attacked " + target.getName() + " for " + monster.getAtk() + " damage!");
+                                            if(killed) System.out.println(target.getName() + " has died!");
+                                        }catch(IndexOutOfBoundsException e){
+                                            System.out.println("Invalid lane input");
+                                        }
+                                    }else{
+                                        System.out.println("Incorrect format (see 'attack help' for details)");
+                                    }
+                                }
                             }
                         default:
                             break;

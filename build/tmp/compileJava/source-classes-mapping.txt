@@ -14,6 +14,8 @@ Card_Game/Cards/Playable.java
  Card_Game.Cards.Playable
 Card_Game/CardContainers/Deck.java
  Card_Game.CardContainers.Deck
+Card_Game/Cards/Attackable.java
+ Card_Game.Cards.Attackable
 Card_Game/CardContainers/Discard.java
  Card_Game.CardContainers.Discard
 Card_Game/Player.java
