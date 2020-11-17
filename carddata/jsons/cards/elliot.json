@@ -1,0 +1,8 @@
+{
+  "type": "monster",
+  "name": "Elliot",
+  "cost": 2,
+  "atk": 2,
+  "def": 2,
+  "description": "epic boy"
+}

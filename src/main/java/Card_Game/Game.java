@@ -23,7 +23,11 @@ public class Game {
     public Game(Scanner scanner) throws IOException {
         this.scanner = scanner;
 
-        players = new Player[]{new Player("deck1"), new Player("deck1")};
+        List<String> deckNames = JsonAccessor.pickDecks();
+        players = new Player[deckNames.size()];
+        for (int i = 0; i < deckNames.size(); i++) {
+            players[i] = new Player(deckNames.get(i));
+        }
         GameComponents.newInstance(players);
         board = new Field[]{players[0].getField(), players[1].getField()};
     }
