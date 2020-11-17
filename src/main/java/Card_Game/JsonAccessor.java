@@ -42,14 +42,14 @@ public class JsonAccessor {
                         monster.setPlayer(player);
                         monster.setAlive(true);
                         Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
-                        monster.setImage(image.getLeft());
+//                        monster.setImage(image.getLeft());
                         monster.setImageName(image.getRight());
                         deck.add(monster);
                     } else {
                         Card card = gson.fromJson(obj, Card.class);
                         card.setPlayer(player);
                         Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
-                        card.setImage(image.getLeft());
+//                        card.setImage(image.getLeft());
                         card.setImageName(image.getRight());
                         deck.add(card);
                     }

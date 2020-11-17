@@ -70,7 +70,7 @@ public class Game {
                     switch (words.get(0)) {
                         case "play":
                             try {
-                                Card cardPlayed = parseCardFromHand(players[currPlayer], words.get(1));
+                                Card cardPlayed = parseCardFromHand(players[currPlayer], words.subList(1, words.size()));
                                 playCard(players[currPlayer], cardPlayed);
 //                                printBoard(players[currPlayer], players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
                             } catch (IndexOutOfBoundsException e) {
@@ -85,10 +85,14 @@ public class Game {
                             endTurn = true;
                             break;
                         case "info":
-                            System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
-                            System.out.println(players[currPlayer].getMana() + " Mana Left");
-                            System.out.print("Your hand:\n");
-                            printHand(players[currPlayer]);
+                            if(words.size() > 1){
+                                printCard(parseCardFromFieldOrHand(players[currPlayer], words.subList(1, words.size())));
+                            }else {
+                                System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
+                                System.out.println(players[currPlayer].getMana() + " Mana Left");
+                                System.out.print("Your hand:\n");
+                                printHand(players[currPlayer]);
+                            }
                         default:
                             break;
                     }
@@ -99,14 +103,16 @@ public class Game {
 
     }
 
-    private Card parseCardFromHand(Player player, String words) {
-        return parseCard(player.getHand(), words);
+    private Card parseCardFromHand(Player player, List<String> words) {
+        String word = StringUtils.join(words, " ");
+        return parseCard(player.getHand(), word);
     }
 
-    private Card parseCardFromFieldOrHand(Player player, String words) {
+    private Card parseCardFromFieldOrHand(Player player, List<String> words) {
         List<Card> collection = new ArrayList<>(player.getHand());
         collection.addAll(GameComponents.getInstance().getAllFieldCards());
-        return parseCard(collection, words);
+        String word = StringUtils.join(words, " ");
+        return parseCard(collection, word);
     }
 
     private Card parseCard(List<Card> collection, String words) {
@@ -198,6 +204,6 @@ public class Game {
     }
 
     private void printCard(Card card) {
-        System.out.println(card.getName() + ":\n" + card.getDescription());
+        System.out.println(card.getName() + ":\n  " + card.getDescription());
     }
 }
