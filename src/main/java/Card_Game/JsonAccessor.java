@@ -1,5 +1,6 @@
 package Card_Game;
 
+import Card_Game.Abilities.Scry;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Monster;
@@ -37,22 +38,32 @@ public class JsonAccessor {
                 try {
                     Reader fileReader = Files.newBufferedReader(Paths.get(deckName.split("/decks/")[0] + "/cards/" + fileName));
                     JsonObject obj = gson.fromJson(fileReader, JsonObject.class);
+                    Card card;
                     if (obj.get("type").getAsString().equals("monster")) {
-                        Monster monster = gson.fromJson(obj, Monster.class);
-                        monster.setPlayer(player);
+                        card = gson.fromJson(obj, Monster.class);
+                        Monster monster = (Monster) card;
                         monster.setAlive(true);
-                        Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
-//                        monster.setImage(image.getLeft());
-                        monster.setImageName(image.getRight());
-                        deck.add(monster);
                     } else {
-                        Card card = gson.fromJson(obj, Card.class);
-                        card.setPlayer(player);
-                        Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
-//                        card.setImage(image.getLeft());
-                        card.setImageName(image.getRight());
-                        deck.add(card);
+                        card = gson.fromJson(obj, Card.class);
                     }
+                    Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
+//                        card.setImage(image.getLeft());
+                    card.setImageName(image.getRight());
+                    card.setPlayer(player);
+                    JsonArray abilities = obj.getAsJsonArray("abilities");
+                    if (abilities != null) {
+                        for (JsonElement ability : abilities) {
+                            if (ability.isJsonObject()) {
+                                try {
+                                    switch (((JsonObject) jsonElement).get("abil").getAsString()) {
+                                        case "scry":
+                                            card.addAbility(new Scry(jsonElement.getAsJsonObject().get("scry_num").getAsInt()));
+                                    }
+                                } catch (Exception ignored) {}
+                            }
+                        }
+                    }
+                    deck.add(card);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

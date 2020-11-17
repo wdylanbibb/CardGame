@@ -1,9 +1,12 @@
 package Card_Game.Cards;
 
+import Card_Game.Abilities.Ability;
 import Card_Game.Player;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Card implements Playable{
 
@@ -15,7 +18,10 @@ public class Card implements Playable{
 //    private Image image;
     private String imageName;
 
-    public Card(@Nonnull String name, int cost, String description, Image image) {
+    private List<Ability> abils = new ArrayList<>();
+
+
+    public Card(@Nonnull String name, int cost, String description/*, Image image*/) {
         this.name = name;
         this.cost = cost;
         this.description = description;
@@ -74,5 +80,30 @@ public class Card implements Playable{
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public List<Ability> getAbils() {
+        return abils;
+    }
+
+    public void setAbils(List<Ability> abils) {
+        this.abils = abils;
+    }
+
+    public boolean addAbility(Ability ability) {
+        if (abils.stream().noneMatch(abil -> abil.getClass() == ability.getClass())) return abils.add(ability);
+        return false;
+    }
+
+    public boolean removeAbility(Ability ability) {
+        return abils.remove(ability);
+    }
+
+    public boolean removeAbility(Class<? extends Ability> cls) {
+        return abils.removeAll(abils.stream().filter(abil -> abil.getClass() == cls).collect(Collectors.toList()));
+    }
+
+    public boolean hasAbility(Class<? extends Ability> cls) {
+        return abils.stream().anyMatch(abil -> abil.getClass() == cls);
     }
 }

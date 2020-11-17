@@ -9,7 +9,7 @@ public class Monster extends Card {
     private boolean alive = true;
 
     public Monster(String name, int cost, int atk, int def, String description, Image image) {
-        super(name, cost, description, image);
+        super(name, cost, description/*, image*/);
         this.atk = atk;
         this.def = def;
     }
