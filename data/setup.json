@@ -1,0 +1,19 @@
+{
+  "players":
+  [
+    {
+      "deck": "%gamerdeck"
+    },
+    {
+      "deck": "random"
+    }
+  ],
+  "deck_dirs":
+  [
+    "data/jsons/base/decks/"
+  ],
+  "img_dirs":
+  [
+    "data/imgs/base/"
+  ]
+}
