@@ -20,7 +20,7 @@ public class Scry extends Ability {
     }
 
     @Override
-    public void run(Card card) {
+    public void run() {
         Player player = card.getPlayer();
         Deck deck = (Deck) GameComponents.getInstance().getPlayerContainer(player, Deck.class);
         System.out.println("Top " + Math.min(deck.size(), num)+ " card(s) of the deck:");

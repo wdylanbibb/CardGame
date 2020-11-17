@@ -9,7 +9,8 @@
   [
     {
       "abil": "scry",
-      "args": [3]
+      "args": [3],
+      "scene": "turnstart"
     }
   ]
 }

@@ -1,6 +1,7 @@
 package Card_Game;
 
 import Card_Game.Abilities.Ability;
+import Card_Game.Abilities.SceneMatcher;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Monster;
@@ -69,12 +70,25 @@ public class JsonAccessor {
                     card.setPlayer(player);
                     card.setAbils(new ArrayList<>());
                     JsonArray abilities = obj.getAsJsonArray("abilities");
-                    if (abilities != null) {
+                    applyAbil(abilities, card);
+                    deck.add(card);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static void applyAbil(JsonArray abilities, Card card){
+        if (abilities != null) {
                         for (JsonElement ability : abilities) {
                             if (ability.isJsonObject()) {
                                 try {
                                     if (abilList.containsKey(ability.getAsJsonObject().get("abil").getAsString().toLowerCase())) {
                                         Ability abil = abilList.get(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
+                                        if(ability.getAsJsonObject().get("scene") != null) {
+                                            abil.setRunScen(SceneMatcher.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString()));
+                                        }
                                         card.addAbility(abil);
                                     }
                                 } catch (Exception e) {
@@ -83,12 +97,6 @@ public class JsonAccessor {
                             }
                         }
                     }
-                    deck.add(card);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     public static List<String> pickDecks() throws IOException {

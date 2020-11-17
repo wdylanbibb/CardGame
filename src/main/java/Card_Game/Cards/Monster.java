@@ -55,5 +55,4 @@ public class Monster extends Card implements Attackable {
         this.alive = alive;
     }
 
-
 }

@@ -1,5 +1,6 @@
 package Card_Game.Cards;
 
+import Card_Game.Abilities.AbilRunScen;
 import Card_Game.Abilities.Ability;
 import Card_Game.Player;
 
@@ -32,7 +33,7 @@ public class Card implements Playable{
     public boolean use(Playable target, Class<? extends Ability> cls) {
         Ability ability = getAbility(cls);
         if (ability != null) {
-            ability.run(this);
+            ability.run();
             return true;
         }
         return false;
@@ -117,5 +118,9 @@ public class Card implements Playable{
             return abils.stream().filter(ability -> ability.getClass() == cls).collect(Collectors.toList()).get(0);
         }
         return null;
+    }
+
+    public List<Ability> getAbilitiesFromScene(AbilRunScen scene){
+        return abils.stream().filter(ability -> ability.getRunScen()==scene).collect(Collectors.toList());
     }
 }
