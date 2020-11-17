@@ -111,8 +111,8 @@ public class Game {
                                 }else{
                                     if(words.size() > 2){
                                         try{
-                                            Monster monster = players[currPlayer].getField().getMonsters()[Integer.parseInt(words.get(1))];
-                                            Monster target = players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1].getField().getMonsters()[Integer.parseInt(words.get(2))];
+                                            Monster monster = players[currPlayer].getField().getMonsters()[Integer.parseInt(words.get(1))-1];
+                                            Monster target = players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1].getField().getMonsters()[Integer.parseInt(words.get(2))-1];
                                             boolean killed = monster.attack(target);
                                             System.out.println(monster.getName() + " attacked " + target.getName() + " for " + monster.getAtk() + " damage!");
                                             if(killed) System.out.println(target.getName() + " has died!");
