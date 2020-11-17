@@ -2,7 +2,7 @@ package Card_Game.Cards;
 
 import java.awt.*;
 
-public class Monster extends Card {
+public class Monster extends Card implements Attackable {
 
     private int atk;
     private int def;
@@ -19,10 +19,14 @@ public class Monster extends Card {
         if (target instanceof Monster) attack((Monster) target);
     }
 
-    private void attack(Monster target) {
-        if (atk > target.def) {
+    @Override
+    public boolean attack(Monster target) {
+        target.setDef(target.getDef() - getAtk());
+        if (target.getDef() <= 0) {
             target.die();
+            return true;
         }
+        return false;
     }
 
     private void die() {
@@ -52,4 +56,6 @@ public class Monster extends Card {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+
 }
