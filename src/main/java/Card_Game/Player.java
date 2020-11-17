@@ -58,7 +58,7 @@ public class Player {
     }
 
     public void endTurn() {
-        field.checkField();
+        checkForDead();
         if (deck.isEmpty()) {
             deck.addAll(discard.reshuffle());
             deck.shuffle();
@@ -91,5 +91,9 @@ public class Player {
 
     public Hand getHand() {
         return hand;
+    }
+
+    public void checkForDead() {
+        field.checkField();
     }
 }

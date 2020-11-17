@@ -2,5 +2,12 @@
   "type": "spell",
   "name": "Jeff",
   "cost": 3,
-  "description": "oh no penut"
+  "description": "oh no penut",
+  "abilities":
+  [
+    {
+      "abil": "scry",
+      "args": [1]
+    }
+  ]
 }

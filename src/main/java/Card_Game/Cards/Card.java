@@ -18,7 +18,7 @@ public class Card implements Playable{
 //    private Image image;
     private String imageName;
 
-    private List<Ability> abils = new ArrayList<>();
+    private List<Ability> abils;
 
 
     public Card(@Nonnull String name, int cost, String description/*, Image image*/) {
@@ -29,8 +29,13 @@ public class Card implements Playable{
     }
 
     @Override
-    public void use(Playable target) {
-
+    public boolean use(Playable target, Class<? extends Ability> cls) {
+        Ability ability = getAbility(cls);
+        if (ability != null) {
+            ability.run(this);
+            return true;
+        }
+        return false;
     }
 
     @Nonnull
@@ -105,5 +110,12 @@ public class Card implements Playable{
 
     public boolean hasAbility(Class<? extends Ability> cls) {
         return abils.stream().anyMatch(abil -> abil.getClass() == cls);
+    }
+
+    public Ability getAbility(Class<? extends Ability> cls) {
+        if (hasAbility(cls)) {
+            return abils.stream().filter(ability -> ability.getClass() == cls).collect(Collectors.toList()).get(0);
+        }
+        return null;
     }
 }

@@ -2,7 +2,7 @@
   "players":
   [
     {
-      "deck": "%deck1"
+      "deck": "%deck2"
     },
     {
       "deck": "random"

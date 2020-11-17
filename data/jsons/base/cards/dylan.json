@@ -9,7 +9,7 @@
   [
     {
       "abil": "scry",
-      "scry_num": 3
+      "args": [3]
     }
   ]
 }

@@ -1,5 +1,6 @@
 package Card_Game.CardContainers;
 
+import Card_Game.Abilities.Ability;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Monster;
@@ -25,25 +26,23 @@ public class Field implements CardContainer {
         return false;
     }
 
-    public boolean use(Card used, Card target) {
+    public boolean use(Card used, Card target, Class<? extends Ability> cls) {
         final boolean[] found = {false};
-        IntStream.rangeClosed(1, len).forEach(i -> {
+        IntStream.rangeClosed(0, len - 1).forEach(i -> {
             if (monsters[i] == used || bottomRow[i] == used) {
-                return;
+                found[0] = true;
             }
-            found[0] = true;
         });
         if (!found[0]) {
             return false;
         }
-        used.use(target);
-        return true;
+        return used.use(target, cls);
     }
 
     public void checkField() {
         for (int i = 0; i < monsters.length; i++) {
             if (monsters[i] != null) {
-                if (!monsters[i].isDead()) {
+                if (monsters[i].isDead()) {
                     monsters[i] = null;
                 }
             }

@@ -1,6 +1,9 @@
 package Card_Game.Cards;
 
+import Card_Game.Abilities.Ability;
+
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Monster extends Card implements Attackable {
 
@@ -12,11 +15,6 @@ public class Monster extends Card implements Attackable {
         super(name, cost, description/*, image*/);
         this.atk = atk;
         this.def = def;
-    }
-
-    @Override
-    public void use(Playable target) {
-        if (target instanceof Monster) attack((Monster) target);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package Card_Game;
 
 
+import Card_Game.Abilities.Ability;
+import Card_Game.Abilities.Scry;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Monster;
@@ -22,6 +24,7 @@ public class Game {
     Scanner scanner;
 
     public Game(Scanner scanner) throws IOException {
+        JsonAccessor.fillAbils();
         this.scanner = scanner;
 
         List<String> deckNames = JsonAccessor.pickDecks();
@@ -52,7 +55,7 @@ public class Game {
     public void run(){
 
         int currPlayer = 0;
-        String in = "";
+        ArrayList<String> words = new ArrayList<>();
         do{
             boolean endTurn = false;
             boolean beginningTurn = true;
@@ -66,26 +69,26 @@ public class Game {
                 if (beginningTurn) printHand(players[currPlayer]);
                 beginningTurn = false;
 
-                ArrayList<String> words = parser();
+                words = parser();
                 if (!words.isEmpty()){
                     switch (words.get(0)) {
                         case "play":
+                            try {
+                                int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
                                 try {
-                                    int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
-                                    try {
-                                        Card cardPlayed = parseCardFromHand(players[currPlayer], words.subList(1, words.size() - 1));
-                                        playCard(players[currPlayer], cardPlayed, num);
-                                    } catch (IndexOutOfBoundsException e) {
-                                        System.out.println("Card not found");
-                                    }
-                                } catch (NumberFormatException exc) {
-                                    try {
-                                        parseCardFromHand(players[currPlayer], words.subList(1, words.size()));
-                                        System.out.println("Please input the name of a card and a number space to play it in on the field.");
-                                    } catch (IndexOutOfBoundsException e) {
-                                        System.out.println("Card not found");
-                                    }
+                                    Card cardPlayed = parseCardFromHand(players[currPlayer], words.subList(1, words.size() - 1));
+                                    playCard(players[currPlayer], cardPlayed, num);
+                                } catch (IndexOutOfBoundsException e) {
+                                    System.out.println("Card not found");
                                 }
+                            } catch (NumberFormatException exc) {
+                                try {
+                                    parseCardFromHand(players[currPlayer], words.subList(1, words.size()));
+                                    System.out.println("Please input the name of a card and a number space to play it in on the field.");
+                                } catch (IndexOutOfBoundsException e) {
+                                    System.out.println("Card not found");
+                                }
+                            }
 //                                printBoard(players[currPlayer], players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
                             break;
                         case "draw":
@@ -93,6 +96,7 @@ public class Game {
                             System.out.print(cardDrawn != null ? "You drew " + cardDrawn.getName() + "\n" : "");
                             break;
                         case "end":
+                        case "quit":
                             endTurn = true;
                             break;
                         case "info":
@@ -124,19 +128,40 @@ public class Game {
                                     }
                                 }
                             }
+                            break;
+
                         default:
+                            Class<? extends Ability> cls = JsonAccessor.getAbil(words.get(0));
+                            if (cls != null) {
+                                try {
+                                    Card card = parseCardFromField(players[currPlayer], words.subList(1, words.size()));
+                                    if (!((Field) GameComponents.getInstance().getPlayerContainer(players[currPlayer], Field.class)).use(card, null, cls)) System.out.println("This card does not have a " + Character.toUpperCase(cls.getSimpleName().charAt(0)) + cls.getSimpleName().substring(1).toLowerCase() + " ability.");
+                                } catch (IndexOutOfBoundsException e) {
+                                    System.out.println("Card not found on field");
+                                }
+                            }
                             break;
                     }
                 }
             }
+            for (Player player : players) {
+                player.checkForDead();
+            }
+            players[currPlayer].endTurn();
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
-        }while(true);
+        }while(!words.get(0).equalsIgnoreCase("quit"));
 
     }
 
     private Card parseCardFromHand(Player player, List<String> words) {
         String word = StringUtils.join(words, " ");
         return parseCard(player.getHand(), word);
+    }
+
+    private Card parseCardFromField(Player player, List<String> words) {
+        List<Card> collection = new ArrayList<>(GameComponents.getInstance().getSelfFieldCards(player));
+        String word = StringUtils.join(words, " ");
+        return parseCard(collection, word);
     }
 
     private Card parseCardFromFieldOrHand(Player player, List<String> words) {

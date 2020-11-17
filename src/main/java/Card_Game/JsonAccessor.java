@@ -1,6 +1,6 @@
 package Card_Game;
 
-import Card_Game.Abilities.Scry;
+import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.Monster;
@@ -17,15 +17,32 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class JsonAccessor {
 
     private static Gson gson;
 
+    public static Map<String, Class<? extends Ability>> abilList;
+
+    public static void fillAbils() throws IOException {
+        if (gson == null) gson = new Gson();
+        abilList = new HashMap<>();
+        Reader reader = Files.newBufferedReader(Paths.get("data/jsons/abilities.json"));
+        JsonObject obj = gson.fromJson(reader, JsonObject.class);
+        JsonArray array = obj.getAsJsonArray("abilities");
+        array.forEach(jsonElement -> {
+            try {
+                Class cls = Class.forName(JsonAccessor.class.getPackageName() + ".Abilities." + jsonElement.getAsJsonObject().get("class").getAsString());
+                if (Ability.class.isAssignableFrom(cls)) {
+                    abilList.put(jsonElement.getAsJsonObject().get("name").getAsString().toLowerCase(), cls);
+                }
+            } catch (ClassNotFoundException | ClassCastException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     public static void fillDeck(String deckName, Deck deck, Player player) throws IOException {
         if (gson == null) gson = new Gson();
@@ -50,16 +67,19 @@ public class JsonAccessor {
 //                        card.setImage(image.getLeft());
                     card.setImageName(image.getRight());
                     card.setPlayer(player);
+                    card.setAbils(new ArrayList<>());
                     JsonArray abilities = obj.getAsJsonArray("abilities");
                     if (abilities != null) {
                         for (JsonElement ability : abilities) {
                             if (ability.isJsonObject()) {
                                 try {
-                                    switch (((JsonObject) jsonElement).get("abil").getAsString()) {
-                                        case "scry":
-                                            card.addAbility(new Scry(jsonElement.getAsJsonObject().get("scry_num").getAsInt()));
+                                    if (abilList.containsKey(ability.getAsJsonObject().get("abil").getAsString().toLowerCase())) {
+                                        Ability abil = abilList.get(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
+                                        card.addAbility(abil);
                                     }
-                                } catch (Exception ignored) {}
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
@@ -126,5 +146,9 @@ public class JsonAccessor {
             }
         }
         return Iterables.get(possibleNames, random.nextInt(possibleNames.size()));
+    }
+
+    public static Class<? extends Ability> getAbil(String s) {
+        return abilList.getOrDefault(s, null);
     }
 }

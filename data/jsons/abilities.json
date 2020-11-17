@@ -1,0 +1,9 @@
+{
+  "abilities":
+  [
+    {
+      "name": "scry",
+      "class": "Scry"
+    }
+  ]
+}

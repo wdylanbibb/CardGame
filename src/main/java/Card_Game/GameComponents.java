@@ -49,4 +49,16 @@ public class GameComponents {
         cards.removeIf(Objects::isNull);
         return cards;
     }
+
+    public List<Card> getSelfFieldCards(Player player) {
+        List<CardContainer> fields = new ArrayList<>();
+        fields.add(players.get(player).get(Field.class));
+        List<Card> cards = new ArrayList<>();
+        fields.forEach(field -> {
+            cards.addAll(Arrays.asList(((Field) field).getBottomRow()));
+            cards.addAll(Arrays.asList(((Field) field).getMonsters()));
+        });
+        cards.removeIf(Objects::isNull);
+        return cards;
+    }
 }
