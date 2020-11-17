@@ -67,16 +67,26 @@ public class Game {
                 beginningTurn = false;
 
                 ArrayList<String> words = parser();
-                if (words.get(0) != null){
+                if (!words.isEmpty()){
                     switch (words.get(0)) {
                         case "play":
-                            try {
-                                Card cardPlayed = parseCardFromHand(players[currPlayer], words.subList(1, words.size()));
-                                playCard(players[currPlayer], cardPlayed);
+                                try {
+                                    int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
+                                    try {
+                                        Card cardPlayed = parseCardFromHand(players[currPlayer], words.subList(1, words.size() - 1));
+                                        playCard(players[currPlayer], cardPlayed, num);
+                                    } catch (IndexOutOfBoundsException e) {
+                                        System.out.println("Card not found");
+                                    }
+                                } catch (NumberFormatException exc) {
+                                    try {
+                                        parseCardFromHand(players[currPlayer], words.subList(1, words.size()));
+                                        System.out.println("Please input the name of a card and a number space to play it in on the field.");
+                                    } catch (IndexOutOfBoundsException e) {
+                                        System.out.println("Card not found");
+                                    }
+                                }
 //                                printBoard(players[currPlayer], players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
-                            } catch (IndexOutOfBoundsException e) {
-                                System.out.println("Card not found");
-                            }
                             break;
                         case "draw":
                             Card cardDrawn = players[currPlayer].draw();
@@ -150,12 +160,16 @@ public class Game {
         }
     }
 
-    private void playCard(Player player, Card card) {
-        if(player.play(card)){
-            System.out.println("Played " + card.getName());
-            printBoard(player, Arrays.stream(players).filter(p -> p != player).collect(Collectors.toList()).get(0));
-        }else{
-            System.out.println("Did not play; Not enough mana. (Costs " + card.getCost() + " out of " + player.getMana() + " mana)");
+    private void playCard(Player player, Card card, int num) {
+        if (num <= Player.FIELD_LEN) {
+            if(player.play(card, num)){
+                System.out.println("Played " + card.getName());
+                printBoard(player, Arrays.stream(players).filter(p -> p != player).collect(Collectors.toList()).get(0));
+            }else{
+                System.out.println("Did not play; Not enough mana. (Costs " + card.getCost() + " out of " + player.getMana() + " mana)");
+            }
+        } else {
+            System.out.println("Please use a number from 1 to " + Player.FIELD_LEN + " to designate a space on the board.");
         }
     }
 
@@ -170,7 +184,7 @@ public class Game {
         Collections.reverse(oppBackList);
         List<Card> oppFrontList = new ArrayList<>(Arrays.asList(oppFront));
         Collections.reverse(oppFrontList);
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         for (Card card : oppBackList) {
             if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
@@ -180,10 +194,10 @@ public class Game {
             System.out.print("   |   |");
         }
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         for (Card card : oppFrontList) {
             if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
@@ -193,33 +207,35 @@ public class Game {
             System.out.print("   |   |");
         }
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
-        for (Card card : currFront) {
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
+        for (int i = 0; i < currFront.length; i++) {
+            Card card = currFront[i];
+            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   | " + (i + 1) +" |");
         }
         System.out.println();
         for (Card card : oppBack) {
             System.out.print("   |   |");
         }
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
-        for (Card card : currBack) {
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
+        for (int i = 0; i < currBack.length; i++) {
+            Card card = currBack[i];
+            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   | " + (i + 1) +" |");
         }
         System.out.println();
         for (Card card : oppBack) {
             System.out.print("   |   |");
         }
         System.out.println();
-        System.out.print(StringUtils.repeat("   -----", oppFront.length));
+        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
         System.out.println();
         System.out.println();
     }

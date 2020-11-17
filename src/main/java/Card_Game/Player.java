@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 public class Player {
 
     public static final int STARTING_HAND = 5;
+    public static final int FIELD_LEN = 5;
     public static int MAX_MANA = 3;
     private int mana;
 
@@ -27,7 +28,7 @@ public class Player {
         JsonAccessor.fillDeck(deckName, deck, this);
         deck.shuffle();
         discard = new Discard();
-        field = new Field(5);
+        field = new Field(FIELD_LEN);
         mana = MAX_MANA;
         IntStream.rangeClosed(1, STARTING_HAND).forEach(i -> initDraw());
     }
@@ -46,11 +47,11 @@ public class Player {
         }
     }
 
-    public boolean play(Card card) {
+    public boolean play(Card card, int num) {
         if(card.getCost() > mana){
             return false;
         }else{
-            if (!field.play(card, new Random().nextInt(5), hand)) return false;
+            if (!field.play(card, num, hand)) return false;
             mana -= card.getCost();
             return true;
         }
