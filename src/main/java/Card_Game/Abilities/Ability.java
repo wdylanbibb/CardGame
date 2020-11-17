@@ -5,8 +5,8 @@ import com.google.gson.JsonArray;
 
 public class Ability implements Runnable {
 
-    AbilRunScen runScen = AbilRunScen.USE;
-    Card card;
+    public AbilRunScen runScen = AbilRunScen.USE;
+    public Card card;
 
     public Ability(JsonArray array, Card card) {
         this.card = card;

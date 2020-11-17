@@ -2,9 +2,12 @@ package Card_Game.CardContainers;
 
 import Card_Game.Abilities.Ability;
 import Card_Game.Cards.Card;
-import Card_Game.Cards.Card;
-import Card_Game.Cards.Monster;
+import Card_Game.Cards.CardTypes.Monster.Monster;
+import Card_Game.Cards.CardTypes.Spell.Spell;
+import Card_Game.UtilMaps;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 public class Field implements CardContainer {
     private int len;
@@ -23,6 +26,11 @@ public class Field implements CardContainer {
             monsters[pos] = (Monster) card;
             return true;
         }
+        if (Spell.class.isAssignableFrom(card.getClass()) && bottomRow[pos] == null) {
+            if (!hand.play(card)) return false;
+            bottomRow[pos] = card;
+            return true;
+        }
         return false;
     }
 
@@ -39,14 +47,25 @@ public class Field implements CardContainer {
         return used.use(target, cls);
     }
 
-    public void checkField() {
+    public List<Card> checkField() {
+        List<Card> toDiscard = new ArrayList<>();
         for (int i = 0; i < monsters.length; i++) {
             if (monsters[i] != null) {
                 if (monsters[i].isDead()) {
                     monsters[i] = null;
+                    toDiscard.add(monsters[i]);
                 }
             }
         }
+        for (int i = 0; i < bottomRow.length; i++) {
+            if (bottomRow[i] != null) {
+                if (bottomRow[i].getClass().equals(UtilMaps.getInstance().getCardTypeByStr("ouspell"))) {
+                    bottomRow[i] = null;
+                    toDiscard.add(bottomRow[i]);
+                }
+            }
+        }
+        return toDiscard;
     }
 
     public Card[] getBottomRow() {

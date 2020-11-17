@@ -94,6 +94,6 @@ public class Player {
     }
 
     public void checkForDead() {
-        field.checkField();
+        discard.addAll(field.checkField());
     }
 }

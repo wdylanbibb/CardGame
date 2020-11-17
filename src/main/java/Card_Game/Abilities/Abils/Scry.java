@@ -1,5 +1,6 @@
-package Card_Game.Abilities;
+package Card_Game.Abilities.Abils;
 
+import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
 import Card_Game.GameComponents;

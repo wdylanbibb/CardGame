@@ -1,9 +1,10 @@
-package Card_Game.Cards;
+package Card_Game.Cards.CardTypes.Monster;
 
-import Card_Game.Abilities.Ability;
+import Card_Game.Cards.Attackable;
+import Card_Game.Cards.Card;
+import com.google.gson.JsonObject;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Monster extends Card implements Attackable {
 
@@ -55,4 +56,8 @@ public class Monster extends Card implements Attackable {
         this.alive = alive;
     }
 
+    @Override
+    public void setParams(JsonObject params) {
+        alive = true;
+    }
 }

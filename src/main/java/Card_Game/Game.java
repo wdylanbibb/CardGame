@@ -5,7 +5,7 @@ import Card_Game.Abilities.AbilRunScen;
 import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
-import Card_Game.Cards.Monster;
+import Card_Game.Cards.CardTypes.Monster.Monster;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -36,17 +36,6 @@ public class Game {
         game.run();
     }
 
-    public ArrayList<String> parser(){
-        Scanner scanner = new Scanner(System.in);
-        String statementIn = scanner.nextLine();
-        ArrayList<String> wordList = new ArrayList<>();
-        Scanner tokenizer = new Scanner(statementIn);
-        while(tokenizer.hasNext()){
-            wordList.add(tokenizer.next());
-        }
-        return wordList;
-    }
-
     public void run(){
 
         int currPlayer = 0;
@@ -57,30 +46,32 @@ public class Game {
             boolean beginningTurn = true;
             Player player = players[currPlayer];
             player.setMana(Player.MAX_MANA);
-            printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
-            printHand(player);
-            GameComponents
-                        .getInstance()
-                        .getSelfFieldCards(player)
-                        .forEach(card -> card
-                                .getAbilitiesFromScene(AbilRunScen.TURNSTART)
-                                .forEach(Ability::run));
             while (!endTurn){
                 System.out.print(beginningTurn ? "Player " + (currPlayer + 1) + "'s Turn\n" : "");
                 System.out.println(player.getMana() + " Mana Left");
-                System.out.print(beginningTurn ? "Your hand:\n" : "");
+                if (beginningTurn) {
+                    printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
+                    System.out.print("Your hand:\n");
+                    printHand(player);
+                    GameComponents
+                            .getInstance()
+                            .getSelfFieldCards(player)
+                            .forEach(card -> card
+                                    .getAbilitiesFromScene(AbilRunScen.TURNSTART)
+                                    .forEach(Ability::run));
+                }
 
 
                 beginningTurn = false;
 
-                words = parser();
+                words = Parser.parser();
                 if (!words.isEmpty()){
                     switch (words.get(0)) {
                         case "play":
                             try {
                                 int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
                                 try {
-                                    Card cardPlayed = parseCardFromHand(player, words.subList(1, words.size() - 1));
+                                    Card cardPlayed = Parser.parseCardFromHand(player, words.subList(1, words.size() - 1));
                                     playCard(player, cardPlayed, num);
                                     cardPlayed.getAbilitiesFromScene(AbilRunScen.PLAY).forEach(Ability::run);
                                 } catch (IndexOutOfBoundsException e) {
@@ -88,13 +79,12 @@ public class Game {
                                 }
                             } catch (NumberFormatException exc) {
                                 try {
-                                    parseCardFromHand(player, words.subList(1, words.size()));
+                                    Parser.parseCardFromHand(player, words.subList(1, words.size()));
                                     System.out.println("Please input the name of a card and a number space to play it in on the field.");
                                 } catch (IndexOutOfBoundsException e) {
                                     System.out.println("Card not found");
                                 }
                             }
-//                                printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
                             break;
                         case "draw":
                             Card cardDrawn = player.draw();
@@ -106,7 +96,7 @@ public class Game {
                             break;
                         case "info":
                             if(words.size() > 1){
-                                printCard(parseCardFromFieldOrHand(player, words.subList(1, words.size())));
+                                printCard(Parser.parseCardFromFieldOrHand(player, words.subList(1, words.size())));
                             }else {
                                 System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
                                 System.out.println(player.getMana() + " Mana Left");
@@ -153,7 +143,7 @@ public class Game {
                             Class<? extends Ability> cls = JsonAccessor.getAbil(words.get(0));
                             if (cls != null) {
                                 try {
-                                    Card card = parseCardFromField(player, words.subList(1, words.size()));
+                                    Card card = Parser.parseCardFromField(player, words.subList(1, words.size()));
                                     if (!((Field) GameComponents.getInstance().getPlayerContainer(player, Field.class)).use(card, null, cls)) System.out.println("This card does not have a " + Character.toUpperCase(cls.getSimpleName().charAt(0)) + cls.getSimpleName().substring(1).toLowerCase() + " ability.");
                                 } catch (IndexOutOfBoundsException e) {
                                     System.out.println("Card not found on field");
@@ -173,32 +163,6 @@ public class Game {
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
         }while(!words.get(0).equalsIgnoreCase("quit"));
 
-    }
-
-    private Card parseCardFromHand(Player player, List<String> words) {
-        String word = StringUtils.join(words, " ");
-        return parseCard(player.getHand(), word);
-    }
-
-    private Card parseCardFromField(Player player, List<String> words) {
-        List<Card> collection = new ArrayList<>(GameComponents.getInstance().getSelfFieldCards(player));
-        String word = StringUtils.join(words, " ");
-        return parseCard(collection, word);
-    }
-
-    private Card parseCardFromFieldOrHand(Player player, List<String> words) {
-        List<Card> collection = new ArrayList<>(player.getHand());
-        collection.addAll(GameComponents.getInstance().getAllFieldCards());
-        String word = StringUtils.join(words, " ");
-        return parseCard(collection, word);
-    }
-
-    private Card parseCard(List<Card> collection, String words) {
-        return collection
-                .stream()
-                .filter(card -> card.getName().equalsIgnoreCase(words))
-                .collect(Collectors.toList())
-                .get(0);
     }
 
     private void printHand(Player player) {

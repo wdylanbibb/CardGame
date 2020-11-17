@@ -5,7 +5,7 @@
       "deck": "%deck2"
     },
     {
-      "deck": "random"
+      "deck": "%deck1"
     }
   ],
   "deck_dirs":

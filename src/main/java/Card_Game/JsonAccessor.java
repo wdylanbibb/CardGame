@@ -1,18 +1,14 @@
 package Card_Game;
 
 import Card_Game.Abilities.Ability;
-import Card_Game.Abilities.SceneMatcher;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
-import Card_Game.Cards.Monster;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -57,22 +53,22 @@ public class JsonAccessor {
                     Reader fileReader = Files.newBufferedReader(Paths.get(deckName.split("/decks/")[0] + "/cards/" + fileName));
                     JsonObject obj = gson.fromJson(fileReader, JsonObject.class);
                     Card card;
-                    if (obj.get("type").getAsString().equals("monster")) {
-                        card = gson.fromJson(obj, Monster.class);
-                        Monster monster = (Monster) card;
-                        monster.setAlive(true);
+                    Class<? extends Card> cls = UtilMaps.getInstance().getCardTypeByStr(obj.get("type").getAsString().toLowerCase());
+                    if (cls != null) {
+                        card = gson.fromJson(obj, cls);
                     } else {
                         card = gson.fromJson(obj, Card.class);
                     }
-                    Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
+//                    Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
 //                        card.setImage(image.getLeft());
-                    card.setImageName(image.getRight());
+//                    card.setImageName(image.getRight());
+                    card.setParams(obj);
                     card.setPlayer(player);
                     card.setAbils(new ArrayList<>());
                     JsonArray abilities = obj.getAsJsonArray("abilities");
                     applyAbil(abilities, card);
                     deck.add(card);
-                } catch (IOException e) {
+                } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
                 }
             }
@@ -81,22 +77,22 @@ public class JsonAccessor {
 
     public static void applyAbil(JsonArray abilities, Card card){
         if (abilities != null) {
-                        for (JsonElement ability : abilities) {
-                            if (ability.isJsonObject()) {
-                                try {
-                                    if (abilList.containsKey(ability.getAsJsonObject().get("abil").getAsString().toLowerCase())) {
-                                        Ability abil = abilList.get(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
-                                        if(ability.getAsJsonObject().get("scene") != null) {
-                                            abil.setRunScen(SceneMatcher.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString()));
-                                        }
-                                        card.addAbility(abil);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+            for (JsonElement ability : abilities) {
+                if (ability.isJsonObject()) {
+                    try {
+                        if (abilList.containsKey(ability.getAsJsonObject().get("abil").getAsString().toLowerCase())) {
+                            Ability abil = abilList.get(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
+                            if(ability.getAsJsonObject().get("scene") != null) {
+                                abil.setRunScen(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString().toLowerCase()));
                             }
+                            card.addAbility(abil);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                }
+            }
+        }
     }
 
     public static List<String> pickDecks() throws IOException {

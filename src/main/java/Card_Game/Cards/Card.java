@@ -3,6 +3,7 @@ package Card_Game.Cards;
 import Card_Game.Abilities.AbilRunScen;
 import Card_Game.Abilities.Ability;
 import Card_Game.Player;
+import com.google.gson.JsonObject;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -122,5 +123,9 @@ public class Card implements Playable{
 
     public List<Ability> getAbilitiesFromScene(AbilRunScen scene){
         return abils.stream().filter(ability -> ability.getRunScen()==scene).collect(Collectors.toList());
+    }
+
+    public void setParams(JsonObject params) {
+
     }
 }
