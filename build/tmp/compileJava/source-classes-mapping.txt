@@ -8,8 +8,6 @@ Card_Game/JsonAccessor.java
  Card_Game.JsonAccessor
 Card_Game/Cards/CardTypes/Spell/OneUseSpell.java
  Card_Game.Cards.CardTypes.Spell.OneUseSpell
-Card_Game/ImgAccessor.java
- Card_Game.ImgAccessor
 Card_Game/Abilities/Runnable.java
  Card_Game.Abilities.Runnable
 Card_Game/CardContainers/Field.java

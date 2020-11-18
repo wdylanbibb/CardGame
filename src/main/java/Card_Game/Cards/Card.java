@@ -6,7 +6,6 @@ import Card_Game.Player;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,17 +16,15 @@ public class Card implements Playable{
     private int cost;
     private Player player;
     private String description;
-//    private Image image;
-    private String imageName;
+    private String image;
 
     private List<Ability> abils;
 
 
-    public Card(@Nonnull String name, int cost, String description/*, Image image*/) {
+    public Card(@Nonnull String name, int cost, String description) {
         this.name = name;
         this.cost = cost;
         this.description = description;
-//        this.image = image;
     }
 
     @Override
@@ -73,21 +70,6 @@ public class Card implements Playable{
         this.description = description;
     }
 
-//    public Image getImage() {
-//        return image;
-//    }
-
-//    public void setImage(Image image) {
-//        this.image = image;
-//    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
 
     public List<Ability> getAbils() {
         return abils;
@@ -127,5 +109,13 @@ public class Card implements Playable{
 
     public void setParams(JsonObject params) {
 
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

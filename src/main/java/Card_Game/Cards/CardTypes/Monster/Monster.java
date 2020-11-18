@@ -12,8 +12,8 @@ public class Monster extends Card implements Attackable {
     private int def;
     private boolean alive = true;
 
-    public Monster(String name, int cost, int atk, int def, String description, Image image) {
-        super(name, cost, description/*, image*/);
+    public Monster(String name, int cost, int atk, int def, String description) {
+        super(name, cost, description);
         this.atk = atk;
         this.def = def;
     }

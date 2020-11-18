@@ -2,7 +2,6 @@ package Card_Game.Cards.CardTypes.Spell;
 
 import Card_Game.Abilities.AbilRunScen;
 import Card_Game.Abilities.Ability;
-import Card_Game.Cards.CardTypes.Spell.Spell;
 
 import javax.annotation.Nonnull;
 

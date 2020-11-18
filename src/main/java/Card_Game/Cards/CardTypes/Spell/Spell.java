@@ -1,7 +1,5 @@
 package Card_Game.Cards.CardTypes.Spell;
 
-import Card_Game.Abilities.AbilRunScen;
-import Card_Game.Abilities.Ability;
 import Card_Game.Cards.Card;
 import com.google.gson.JsonObject;
 

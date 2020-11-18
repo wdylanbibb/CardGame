@@ -31,7 +31,7 @@ public class JsonAccessor {
         JsonArray array = obj.getAsJsonArray("abilities");
         array.forEach(jsonElement -> {
             try {
-                Class cls = Class.forName(JsonAccessor.class.getPackageName() + ".Abilities." + jsonElement.getAsJsonObject().get("class").getAsString());
+                Class cls = Class.forName(JsonAccessor.class.getPackageName() + ".Abilities.Abils." + jsonElement.getAsJsonObject().get("class").getAsString());
                 if (Ability.class.isAssignableFrom(cls)) {
                     abilList.put(jsonElement.getAsJsonObject().get("name").getAsString().toLowerCase(), cls);
                 }
@@ -59,9 +59,6 @@ public class JsonAccessor {
                     } else {
                         card = gson.fromJson(obj, Card.class);
                     }
-//                    Pair<Image, String> image = ImgAccessor.getImage(obj.get("name").getAsString().toLowerCase().replace(" ", "_"));
-//                        card.setImage(image.getLeft());
-//                    card.setImageName(image.getRight());
                     card.setParams(obj);
                     card.setPlayer(player);
                     card.setAbils(new ArrayList<>());
