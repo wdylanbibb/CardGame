@@ -4,8 +4,6 @@ import Card_Game.Cards.Attackable;
 import Card_Game.Cards.Card;
 import com.google.gson.JsonObject;
 
-import java.awt.*;
-
 public class Monster extends Card implements Attackable {
 
     private int atk;

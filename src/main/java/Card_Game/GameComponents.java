@@ -2,6 +2,7 @@ package Card_Game;
 
 import Card_Game.CardContainers.*;
 import Card_Game.Cards.Card;
+import Card_Game.Rules.Rule;
 
 import java.util.*;
 
@@ -10,9 +11,11 @@ public class GameComponents {
     private static GameComponents INSTANCE = null;
 
     private Map<Player, Map<Class<? extends CardContainer>, CardContainer>> players;
+    private List<Rule> rules;
 
     public GameComponents(Player... players) {
         this.players = new HashMap<>();
+        rules = new ArrayList<>();
         for (Player player : players) {
             Map<Class<? extends CardContainer>, CardContainer> containers = new HashMap<>();
             containers.put(Field.class, player.getField());
@@ -60,5 +63,17 @@ public class GameComponents {
         });
         cards.removeIf(Objects::isNull);
         return cards;
+    }
+
+    public void addRule(Rule rule) {
+        rules.add(rule);
+    }
+
+    public void removeRule(Rule rule) {
+        rules.remove(rule);
+    }
+
+    public boolean canPlay(Card card) {
+        return rules.stream().noneMatch(rule -> rule.check(card));
     }
 }

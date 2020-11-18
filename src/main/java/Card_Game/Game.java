@@ -6,10 +6,8 @@ import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.CardTypes.Monster.Monster;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -74,8 +72,10 @@ public class Game {
                                 int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
                                 try {
                                     Card cardPlayed = Parser.parseCardFromHand(player, words.subList(1, words.size() - 1));
-                                    playCard(player, cardPlayed, num);
-                                    cardPlayed.getAbilitiesFromScene(AbilRunScen.PLAY).forEach(Ability::run);
+                                    if (GameComponents.getInstance().canPlay(cardPlayed)) {
+                                        playCard(player, cardPlayed, num);
+                                        cardPlayed.getAbilitiesFromScene(AbilRunScen.PLAY).forEach(Ability::run);
+                                    }
                                 } catch (IndexOutOfBoundsException e) {
                                     System.out.println("Card not found");
                                 }

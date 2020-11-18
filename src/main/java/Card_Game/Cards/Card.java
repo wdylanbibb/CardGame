@@ -2,10 +2,13 @@ package Card_Game.Cards;
 
 import Card_Game.Abilities.AbilRunScen;
 import Card_Game.Abilities.Ability;
+import Card_Game.GameComponents;
 import Card_Game.Player;
+import Card_Game.Rules.Rule;
 import com.google.gson.JsonObject;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,8 @@ public class Card implements Playable{
 
     private List<Ability> abils;
 
+    private List<Rule> ruleList = new ArrayList<>();
+
 
     public Card(@Nonnull String name, int cost, String description) {
         this.name = name;
@@ -29,6 +34,7 @@ public class Card implements Playable{
 
     @Override
     public boolean use(Playable target, Class<? extends Ability> cls) {
+        ruleList.forEach(rule -> GameComponents.getInstance().addRule(rule));
         Ability ability = getAbility(cls);
         if (ability != null) {
             ability.run();
@@ -117,5 +123,26 @@ public class Card implements Playable{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public void destroy() {
+        ruleList.forEach(rule -> GameComponents.getInstance().removeRule(rule));
+    }
+
+    public List<Rule> getRules() {
+        return ruleList;
+    }
+
+    public void setRules(List<Rule> ruleList) {
+        this.ruleList = ruleList;
+    }
+
+    public void addRule(Rule rule) {
+        ruleList.add(rule);
+    }
+
+    public void removeRule(Rule rule) {
+        ruleList.remove(rule);
     }
 }

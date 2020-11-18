@@ -3,6 +3,7 @@ package Card_Game;
 import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
+import Card_Game.Rules.Rule;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -64,12 +65,28 @@ public class JsonAccessor {
                     card.setAbils(new ArrayList<>());
                     JsonArray abilities = obj.getAsJsonArray("abilities");
                     applyAbil(abilities, card);
+                    JsonArray rules = obj.getAsJsonArray("rules");
+                    applyRules(rules, card);
                     deck.add(card);
                 } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private static void applyRules(JsonArray rules, Card card) {
+        if (rules != null) {
+            for (JsonElement rule : rules) {
+                if (rule.isJsonObject()) {
+                    try {
+                        Rule r = gson.fromJson(rule, Rule.class);
+                        r.setEnums();
+                        card.addRule(r);
+                    } catch (Exception ignored) {}
+                }
+            }
+        }
     }
 
     public static void applyAbil(JsonArray abilities, Card card){

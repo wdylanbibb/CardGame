@@ -5,6 +5,7 @@ import Card_Game.Cards.Card;
 import Card_Game.Cards.CardTypes.Monster.Monster;
 import Card_Game.Cards.CardTypes.Spell.OneUseSpell;
 import Card_Game.Cards.CardTypes.Spell.Spell;
+import Card_Game.Rules.RuleUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +13,10 @@ import java.util.Map;
 public class UtilMaps {
 
     private static UtilMaps INSTANCE;
-    public static Map<String, AbilRunScen> abilMap;
-    public static Map<String, Class<? extends Card>> cardTypes;
+    private static Map<String, AbilRunScen> abilMap;
+    private static Map<String, Class<? extends Card>> cardTypes;
+    private static Map<String, RuleUtils.CompareAttr> comparisonsMap;
+    private static Map<String, RuleUtils.PlayerEffect> playerEffects;
 
     public UtilMaps(){
         abilMap = new HashMap<>();
@@ -27,6 +30,20 @@ public class UtilMaps {
         cardTypes.put("monster", Monster.class);
         cardTypes.put("spell", Spell.class);
         cardTypes.put("ouspell", OneUseSpell.class);
+
+        comparisonsMap = new HashMap<>();
+        comparisonsMap.put(">", RuleUtils.CompareAttr.GREATER_THAN);
+        comparisonsMap.put("<", RuleUtils.CompareAttr.LESS_THAN);
+        comparisonsMap.put(">=", RuleUtils.CompareAttr.GREATER_OR_EQUAL);
+        comparisonsMap.put("<=", RuleUtils.CompareAttr.LESS_OR_EQUAL);
+        comparisonsMap.put("=", RuleUtils.CompareAttr.EQUAL_TO);
+        comparisonsMap.put("==", RuleUtils.CompareAttr.EQUAL_TO);
+        comparisonsMap.put("!=", RuleUtils.CompareAttr.NOT_EQUAL);
+
+        playerEffects = new HashMap<>();
+        playerEffects.put("self", RuleUtils.PlayerEffect.SELF);
+        playerEffects.put("all", RuleUtils.PlayerEffect.ALL);
+        playerEffects.put("other", RuleUtils.PlayerEffect.NOT_SELF);
     }
 
     public static UtilMaps getInstance() {
@@ -42,5 +59,13 @@ public class UtilMaps {
 
     public Class<? extends Card> getCardTypeByStr(String type){
         return cardTypes.getOrDefault(type, null);
+    }
+
+    public RuleUtils.CompareAttr getComparisonByString(String compare){
+        return comparisonsMap.getOrDefault(compare, RuleUtils.CompareAttr.NONE);
+    }
+
+    public RuleUtils.PlayerEffect getPlayerByString(String player){
+        return playerEffects.getOrDefault(player, RuleUtils.PlayerEffect.NONE);
     }
 }

@@ -12,4 +12,11 @@ public class Discard extends ArrayList<Card> implements CardContainer {
         removeAll(deck);
         return deck;
     }
+
+    @Override
+    public boolean add(Card card) {
+        boolean ret = super.add(card);
+        card.destroy();
+        return ret;
+    }
 }
