@@ -6,8 +6,10 @@ import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.CardTypes.Monster.Monster;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +38,7 @@ public class Game {
         game.run();
     }
 
-    public void run(){
+    public void run() throws IOException {
 
         int currPlayer = 0;
         ArrayList<String> words = new ArrayList<>();
@@ -165,7 +167,7 @@ public class Game {
 
     }
 
-    private void printHand(Player player) {
+    private void printHand(Player player) throws IOException {
         for (Card card : player.getHand()) {
             System.out.println("  " + card.getName());
         }

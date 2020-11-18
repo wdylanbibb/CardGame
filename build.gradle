@@ -20,6 +20,11 @@ dependencies {
     
     // apache commons
     implementation 'org.apache.commons:commons-lang3:3.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 
 }
 
