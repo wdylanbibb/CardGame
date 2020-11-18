@@ -18,9 +18,11 @@ dependencies {
     // gson
     implementation 'com.google.code.gson:gson:2.8.6'
     
-    // apache commons
+    // apache commons lang3
     implementation 'org.apache.commons:commons-lang3:3.0'
 
+    // apache commons-codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 }
 
 application {

@@ -3,7 +3,8 @@
   [
     {
       "name": "scry",
-      "class": "Scry"
+      "class": "Scry",
+      "args": ["int"]
     }
   ]
 }
