@@ -4,33 +4,46 @@ import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Deck;
 import Card_Game.Cards.Card;
 import Card_Game.Rules.Rule;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.NodeList;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import jdk.jshell.execution.Util;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class JsonAccessor {
 
-    private static final String DATA_DIR = "src/main/java/external_data";
+    private static final String DATA_DIR = "external_data";
     private static Gson gson;
 
+    private static NodeList<ImportDeclaration> imports;
 
-    public static void fillMaps() {
+
+    public static void fillMaps() throws IOException {
         if (gson == null) gson = new Gson();
         Map<String, Class<? extends Ability>> abilList = new HashMap<>();
         Map<String, String> decks = new HashMap<>();
         Map<String, String> cards = new HashMap<>();
         File externalData = new File(DATA_DIR);
+        Reader sampleReader = Files.newBufferedReader(Paths.get("src/main/java/Card_Game/Abilities/Abils/SampleAbility.java"));
+        CompilationUnit sampleUnit = StaticJavaParser.parse(sampleReader);
+        imports = sampleUnit.getImports();
         if (externalData.isDirectory()) {
             Arrays.asList(Objects.requireNonNull(externalData.listFiles())).forEach(file -> {
                 if (file.isDirectory()) {
@@ -39,14 +52,35 @@ public class JsonAccessor {
                                 switch (modFile.getName()) {
                                     case "abilities":
                                         Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach(javaClass -> {
-                                            if (javaClass.isFile() && javaClass.getName().endsWith(".java")) {
+                                            if (javaClass.isFile() && javaClass.getName().endsWith(".java") && !javaClass.getName().equals("SampleAbility.java")) {
                                                 try {
-                                                    String className = (externalData.getName() + javaClass.getPath().replace("\\", "/").split(DATA_DIR)[1]).replace("/", ".").split(".java")[0];
-                                                    Class cls = Class.forName(className);
-                                                    if (Ability.class.isAssignableFrom(cls)) {
-                                                        abilList.put(javaClass.getName().split(".java")[0].toLowerCase(), cls);
+                                                    Reader reader = Files.newBufferedReader(Paths.get(javaClass.getPath()));
+                                                    CompilationUnit compilationUnit = StaticJavaParser.parse(reader);
+                                                    compilationUnit.setImports(imports);
+                                                    compilationUnit.setPackageDeclaration("Card_Game.Abilities.Abils." + file.getName());
+                                                    try {
+                                                        File folder = new File("src/main/java/Card_Game/Abilities/Abils/" + file.getName() + "/");
+                                                        folder.mkdir();
+                                                            final String fileName = "src/main/java/Card_Game/Abilities/Abils/" + file.getName() + "/" + javaClass.getName();
+                                                            Writer fileWriter = Files.newBufferedWriter(Paths.get(fileName));
+                                                            fileWriter.write(compilationUnit.toString());
+                                                            fileWriter.close();
+                                                            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+                                                            int compResult = compiler.run(null, null, null, fileName);
+                                                            if (compResult == 0) {
+                                                                Logger.getLogger("files").info("Compilation successful!");
+                                                            } else {
+                                                                Logger.getLogger("files").info("Compilation failed");
+                                                            }
+                                                            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("src/main/java").toURI().toURL() });
+                                                            Class cls = Class.forName("Card_Game.Abilities.Abils." + file.getName() + "." + javaClass.getName().split(".java")[0], true, classLoader);
+                                                            if (Ability.class.isAssignableFrom(cls)) {
+                                                                abilList.put(javaClass.getName().split(".java")[0].toLowerCase(), cls);
+                                                            }
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
                                                     }
-                                                } catch (ClassNotFoundException | ClassCastException e) {
+                                                } catch (ClassCastException | IOException | ClassNotFoundException e) {
                                                     e.printStackTrace();
                                                 }
                                             }

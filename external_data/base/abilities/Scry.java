@@ -1,4 +1,4 @@
-package external_data.base.abilities;
+package base.abilities;
 
 import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Deck;
