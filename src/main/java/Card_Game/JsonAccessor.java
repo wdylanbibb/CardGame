@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import jdk.jshell.execution.Util;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,26 +21,60 @@ import java.util.*;
 
 public class JsonAccessor {
 
+    private static final String DATA_DIR = "src/main/java/external_data";
     private static Gson gson;
 
-    public static Map<String, Class<? extends Ability>> abilList;
 
-    public static void fillAbils() throws IOException {
+    public static void fillMaps() {
         if (gson == null) gson = new Gson();
-        abilList = new HashMap<>();
-        Reader reader = Files.newBufferedReader(Paths.get("data/jsons/abilities.json"));
-        JsonObject obj = gson.fromJson(reader, JsonObject.class);
-        JsonArray array = obj.getAsJsonArray("abilities");
-        array.forEach(jsonElement -> {
-            try {
-                Class cls = Class.forName(JsonAccessor.class.getPackageName() + ".Abilities.Abils." + jsonElement.getAsJsonObject().get("class").getAsString());
-                if (Ability.class.isAssignableFrom(cls)) {
-                    abilList.put(jsonElement.getAsJsonObject().get("name").getAsString().toLowerCase(), cls);
+        Map<String, Class<? extends Ability>> abilList = new HashMap<>();
+        Map<String, String> decks = new HashMap<>();
+        Map<String, String> cards = new HashMap<>();
+        File externalData = new File(DATA_DIR);
+        if (externalData.isDirectory()) {
+            Arrays.asList(Objects.requireNonNull(externalData.listFiles())).forEach(file -> {
+                if (file.isDirectory()) {
+                    Arrays.asList(Objects.requireNonNull(file.listFiles())).forEach(modFile -> {
+                        if (modFile.isDirectory()) {
+                                switch (modFile.getName()) {
+                                    case "abilities":
+                                        Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach(javaClass -> {
+                                            if (javaClass.isFile() && javaClass.getName().endsWith(".java")) {
+                                                try {
+                                                    String className = (externalData.getName() + javaClass.getPath().replace("\\", "/").split(DATA_DIR)[1]).replace("/", ".").split(".java")[0];
+                                                    Class cls = Class.forName(className);
+                                                    if (Ability.class.isAssignableFrom(cls)) {
+                                                        abilList.put(javaClass.getName().split(".java")[0].toLowerCase(), cls);
+                                                    }
+                                                } catch (ClassNotFoundException | ClassCastException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                        break;
+                                    case "decks":
+                                        Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach(jsonFile -> {
+                                            if (jsonFile.isFile() && jsonFile.getName().endsWith(".json")) {
+                                                decks.put(jsonFile.getName().split(".json")[0], jsonFile.getPath());
+                                            }
+                                        });
+                                        break;
+                                    case "cards":
+                                        Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach(jsonFile -> {
+                                            if (jsonFile.isFile() && jsonFile.getName().endsWith(".json")) {
+                                                cards.put(jsonFile.getName().split(".json")[0], jsonFile.getPath());
+                                            }
+                                        });
+                                        break;
+                                }
+                        }
+                    });
                 }
-            } catch (ClassNotFoundException | ClassCastException e) {
-                e.printStackTrace();
-            }
-        });
+            });
+        }
+        UtilMaps.getInstance().fillAbilList(abilList);
+        UtilMaps.getInstance().fillDeckList(decks);
+        UtilMaps.getInstance().fillCardList(cards);
     }
 
     public static void fillDeck(String deckName, Deck deck, Player player) throws IOException {
@@ -49,9 +84,9 @@ public class JsonAccessor {
         JsonArray array = object.getAsJsonArray("deck");
         array.iterator().forEachRemaining(jsonElement -> {
             if (jsonElement.isJsonPrimitive()) {
-                String fileName = jsonElement.getAsString().toLowerCase().replace(" ", "_") + ".json";
+                String fileName = jsonElement.getAsString().toLowerCase().replace(" ", "_");
                 try {
-                    Reader fileReader = Files.newBufferedReader(Paths.get(deckName.split("/decks/")[0] + "/cards/" + fileName));
+                    Reader fileReader = Files.newBufferedReader(Paths.get(UtilMaps.getInstance().getCardByName(fileName)));
                     JsonObject obj = gson.fromJson(fileReader, JsonObject.class);
                     Card card;
                     Class<? extends Card> cls = UtilMaps.getInstance().getCardTypeByStr(obj.get("type").getAsString().toLowerCase());
@@ -94,8 +129,8 @@ public class JsonAccessor {
             for (JsonElement ability : abilities) {
                 if (ability.isJsonObject()) {
                     try {
-                        if (abilList.containsKey(ability.getAsJsonObject().get("abil").getAsString().toLowerCase())) {
-                            Ability abil = abilList.get(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
+                        if (UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()) != null) {
+                            Ability abil = UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
                             if(ability.getAsJsonObject().get("scene") != null) {
                                 abil.setRunScen(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString().toLowerCase()));
                             }
@@ -111,7 +146,7 @@ public class JsonAccessor {
 
     public static List<String> pickDecks() throws IOException {
         if (gson == null) gson = new Gson();
-        Reader reader = Files.newBufferedReader(Paths.get("data/setup.json"));
+        Reader reader = Files.newBufferedReader(Paths.get(DATA_DIR + "/setup.json"));
         JsonObject object = gson.fromJson(reader, JsonObject.class);
         JsonArray array = object.getAsJsonArray("players");
         List<String> decks = new ArrayList<>();
@@ -120,18 +155,9 @@ public class JsonAccessor {
                 String name = ((JsonObject) jsonElement).get("deck").getAsString();
                 if (name.startsWith("%")) {
                     name = name.substring(1);
-                    JsonArray dirArray = object.getAsJsonArray("deck_dirs");
-                    boolean found = false;
-                    for (JsonElement dir : dirArray) {
-                        if (dir.isJsonPrimitive()) {
-                            if (new File(dir.getAsString() + name + ".json").exists()) {
-                                decks.add(dir.getAsString() + name + ".json");
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!found) {
+                    if (UtilMaps.getInstance().getDeckByName("name") != null) {
+                        decks.add(UtilMaps.getInstance().getDeckByName("name"));
+                    } else {
                         try {
                             decks.add(pickRandomDeck());
                         } catch (IOException e) {
@@ -152,21 +178,7 @@ public class JsonAccessor {
 
     private static String pickRandomDeck() throws IOException {
         Random random = new Random();
-        List<String> possibleNames = new ArrayList<>();
-        Reader reader = Files.newBufferedReader(Paths.get("data/setup.json"));
-        JsonObject object = gson.fromJson(reader, JsonObject.class);
-        JsonArray array = object.getAsJsonArray("deck_dirs");
-        for (JsonElement dir : array) {
-            if (dir.isJsonPrimitive()) {
-                for (File file : Objects.requireNonNull(new File(dir.getAsString()).listFiles())) {
-                    possibleNames.add(dir.getAsString() + file.getName());
-                }
-            }
-        }
+        List<String> possibleNames = UtilMaps.getInstance().getDeckPaths();
         return Iterables.get(possibleNames, random.nextInt(possibleNames.size()));
-    }
-
-    public static Class<? extends Ability> getAbil(String s) {
-        return abilList.getOrDefault(s, null);
     }
 }

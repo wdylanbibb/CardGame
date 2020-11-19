@@ -1,14 +1,18 @@
 package Card_Game;
 
 import Card_Game.Abilities.AbilRunScen;
+import Card_Game.Abilities.Ability;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.CardTypes.Monster.Monster;
 import Card_Game.Cards.CardTypes.Spell.OneUseSpell;
 import Card_Game.Cards.CardTypes.Spell.Spell;
 import Card_Game.Rules.RuleUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UtilMaps {
 
@@ -17,6 +21,9 @@ public class UtilMaps {
     private static Map<String, Class<? extends Card>> cardTypes;
     private static Map<String, RuleUtils.CompareAttr> comparisonsMap;
     private static Map<String, RuleUtils.PlayerEffect> playerEffects;
+    private static Map<String, Class<? extends Ability>> abilList;
+    private static Map<String, String> deckJsons;
+    private static Map<String, String> cardJsons;
 
     public UtilMaps(){
         abilMap = new HashMap<>();
@@ -44,6 +51,12 @@ public class UtilMaps {
         playerEffects.put("self", RuleUtils.PlayerEffect.SELF);
         playerEffects.put("all", RuleUtils.PlayerEffect.ALL);
         playerEffects.put("other", RuleUtils.PlayerEffect.NOT_SELF);
+
+        abilList = new HashMap<>();
+
+        deckJsons = new HashMap<>();
+
+        deckJsons = new HashMap<>();
     }
 
     public static UtilMaps getInstance() {
@@ -67,5 +80,37 @@ public class UtilMaps {
 
     public RuleUtils.PlayerEffect getPlayerByString(String player){
         return playerEffects.getOrDefault(player, RuleUtils.PlayerEffect.NONE);
+    }
+
+    public void fillAbilList(Map<String, Class<? extends Ability>> list) {
+        abilList = list;
+    }
+
+    public Class<? extends Ability> getAbilityByString(String abil) {
+        return abilList.getOrDefault(abil, null);
+    }
+
+    public void fillDeckList(Map<String, String> decks) {
+        deckJsons = decks;
+    }
+
+    public String getDeckByName(String name) {
+        return deckJsons.getOrDefault(name, null);
+    }
+
+    public List<String> getDeckPaths() {
+        return new ArrayList<>(deckJsons.values());
+    }
+
+    public void fillCardList(Map<String, String> cards) {
+        cardJsons = cards;
+    }
+
+    public String getCardByName(String name) {
+        return cardJsons.getOrDefault(name, null);
+    }
+
+    public List<String> getCardPaths() {
+        return new ArrayList<>(cardJsons.values());
     }
 }

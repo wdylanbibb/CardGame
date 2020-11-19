@@ -7,9 +7,5 @@
     {
       "deck": "%deck1"
     }
-  ],
-  "deck_dirs":
-  [
-    "data/jsons/base/decks/"
   ]
 }

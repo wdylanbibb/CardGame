@@ -19,7 +19,7 @@ public class Game {
     Scanner scanner;
 
     public Game(Scanner scanner) throws IOException {
-        JsonAccessor.fillAbils();
+        JsonAccessor.fillMaps();
         this.scanner = scanner;
 
         List<String> deckNames = JsonAccessor.pickDecks();
@@ -142,7 +142,7 @@ public class Game {
                             break;
 
                         default:
-                            Class<? extends Ability> cls = JsonAccessor.getAbil(words.get(0));
+                            Class<? extends Ability> cls = UtilMaps.getInstance().getAbilityByString(words.get(0));
                             if (cls != null) {
                                 try {
                                     Card card = Parser.parseCardFromField(player, words.subList(1, words.size()));

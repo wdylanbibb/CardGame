@@ -3,7 +3,7 @@ package Card_Game.Abilities;
 import Card_Game.Cards.Card;
 import com.google.gson.JsonArray;
 
-public class Ability implements Runnable {
+public abstract class Ability implements Runnable {
 
     public AbilRunScen runScen = AbilRunScen.USE;
     public Card card;
@@ -13,9 +13,7 @@ public class Ability implements Runnable {
     }
 
     @Override
-    public void run() {
-
-    }
+    public abstract void run();
 
     public AbilRunScen getRunScen() {
         return runScen;
