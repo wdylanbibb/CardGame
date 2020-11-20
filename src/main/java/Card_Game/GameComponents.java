@@ -74,6 +74,6 @@ public class GameComponents {
     }
 
     public boolean canPlay(Card card) {
-        return rules.stream().noneMatch(rule -> rule.check(card));
+        return rules.stream().allMatch(rule -> rule.check(card));
     }
 }

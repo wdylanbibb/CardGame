@@ -136,6 +136,7 @@ public class JsonAccessor {
                     applyAbil(abilities, card);
                     JsonArray rules = obj.getAsJsonArray("rules");
                     applyRules(rules, card);
+                    card.verifyImage();
                     deck.add(card);
                 } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
@@ -151,6 +152,7 @@ public class JsonAccessor {
                     try {
                         Rule r = gson.fromJson(rule, Rule.class);
                         r.setEnums();
+                        card.setRules(new ArrayList<>());
                         card.addRule(r);
                     } catch (Exception ignored) {}
                 }

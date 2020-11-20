@@ -6,8 +6,12 @@ import Card_Game.GameComponents;
 import Card_Game.Player;
 import Card_Game.Rules.Rule;
 import com.google.gson.JsonObject;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,13 +38,17 @@ public class Card implements Playable{
 
     @Override
     public boolean use(Playable target, Class<? extends Ability> cls) {
-        ruleList.forEach(rule -> GameComponents.getInstance().addRule(rule));
         Ability ability = getAbility(cls);
         if (ability != null) {
             ability.run();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void play() {
+        ruleList.forEach(rule -> GameComponents.getInstance().addRule(rule));
     }
 
     @Nonnull
@@ -144,5 +152,13 @@ public class Card implements Playable{
 
     public void removeRule(Rule rule) {
         ruleList.remove(rule);
+    }
+
+    public void verifyImage() throws IOException {
+        if (image == null || !Base64.isBase64(image)) {
+            image = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File("external_data/default.png")));
+        }
+
+        System.out.println(name + "\n\n" + image + "\n\n\n\n");
     }
 }

@@ -24,11 +24,13 @@ public class Field implements CardContainer {
         if (card instanceof Monster && monsters[pos] == null) {
             if (!hand.play(card)) return false;
             monsters[pos] = (Monster) card;
+            card.play();
             return true;
         }
         if (Spell.class.isAssignableFrom(card.getClass()) && bottomRow[pos] == null) {
             if (!hand.play(card)) return false;
             bottomRow[pos] = card;
+            card.play();
             return true;
         }
         return false;

@@ -39,9 +39,15 @@ public class RuleUtils {
                 switch (playersToAffect) {
                     case SELF:
                         valToCompare = GameComponents.getInstance().getSelfFieldCards(player).size();
+                        if (card.getPlayer() != player) {
+                            return null;
+                        }
                         break;
                     case NOT_SELF:
                         valToCompare = GameComponents.getInstance().getAllFieldCards().size() - GameComponents.getInstance().getSelfFieldCards(player).size();
+                        if (card.getPlayer() == player) {
+                            return null;
+                        }
                         break;
                     case ALL:
                         valToCompare = GameComponents.getInstance().getAllFieldCards().size();
