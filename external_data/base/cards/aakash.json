@@ -1,6 +1,15 @@
 {
-  "type": "trap",
+  "type": "spell",
   "name": "Aakash",
   "cost": 3,
-  "description": "he is comin"
+  "description": "he is comin",
+  "rules":
+  [
+    {
+      "attr": "atk",
+      "val": 1,
+      "compare": "<=",
+      "players": "other"
+    }
+  ]
 }

@@ -66,7 +66,7 @@ public class Game {
 
                 words = Parser.parser();
                 if (!words.isEmpty()){
-                    switch (words.get(0)) {
+                    switch (words.get(0).toLowerCase()) {
                         case "play":
                             try {
                                 int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
@@ -75,6 +75,8 @@ public class Game {
                                     if (GameComponents.getInstance().canPlay(cardPlayed)) {
                                         playCard(player, cardPlayed, num);
                                         cardPlayed.getAbilitiesFromScene(AbilRunScen.PLAY).forEach(Ability::run);
+                                    } else {
+                                        System.out.println("Card cannot be played right now because of a rule set by another card.");
                                     }
                                 } catch (IndexOutOfBoundsException e) {
                                     System.out.println("Card not found");
@@ -105,6 +107,7 @@ public class Game {
                                 System.out.print("Your hand:\n");
                                 printHand(player);
                             }
+                            break;
                         case "attack":
                             if(words.size() > 1){
                                 if(words.get(1).equalsIgnoreCase("help")){
@@ -140,7 +143,6 @@ public class Game {
                                 }
                             }
                             break;
-
                         default:
                             Class<? extends Ability> cls = UtilMaps.getInstance().getAbilityByString(words.get(0));
                             if (cls != null) {
