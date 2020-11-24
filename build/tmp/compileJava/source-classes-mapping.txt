@@ -1,5 +1,5 @@
-Card_Game/Game.java
- Card_Game.Game
+Card_Game/Abilities/Abils/SampleAbility.java
+ Card_Game.Abilities.Abils.SampleAbility
 Card_Game/UtilMaps.java
  Card_Game.UtilMaps
 Card_Game/Abilities/Abils/base/Scry.java
@@ -47,5 +47,5 @@ Card_Game/Cards/Card.java
  Card_Game.Cards.Card
 Card_Game/Abilities/AbilRunScen.java
  Card_Game.Abilities.AbilRunScen
-Card_Game/Abilities/Abils/SampleAbility.java
- Card_Game.Abilities.Abils.SampleAbility
+Card_Game/Game.java
+ Card_Game.Game

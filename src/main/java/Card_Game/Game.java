@@ -104,7 +104,7 @@ public class Game {
                             break;
                         case "info":
                             if(words.size() > 1){
-                                printCard(Parser.parseCardFromFieldOrHand(player, words.subList(1, words.size())));
+                                printCardDesc(Parser.parseCardFromFieldOrHand(player, words.subList(1, words.size())));
                             }else {
                                 System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
                                 System.out.println(player.getMana() + " Mana Left");
@@ -203,63 +203,71 @@ public class Game {
         Collections.reverse(oppBackList);
         List<Card> oppFrontList = new ArrayList<>(Arrays.asList(oppFront));
         Collections.reverse(oppFrontList);
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        for (Card card : oppBackList) {
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
+        List<Card> currFrontList = new ArrayList<>(Arrays.asList(currFront));
+        Collections.reverse(currFrontList);
+        List<Card> currBackList = new ArrayList<>(Arrays.asList(currBack));
+        Collections.reverse(currBackList);
+
+        //Print opposite back field
+        ArrayList<ArrayList<String>> oppBackImages = new ArrayList<>();
+        for(int i = 0; i < oppBackList.size(); i++){
+            oppBackImages.add(getCardImage(oppBackList.get(i), " "));
         }
-        System.out.println();
-        for (Card ignored : oppBack) {
-            System.out.print("   |   |");
+        printField(oppBackImages);
+
+        //Print opposite front field
+        ArrayList<ArrayList<String>> oppFrontImages = new ArrayList<>();
+        for(int i = 0; i < oppFrontList.size(); i++){
+            oppFrontImages.add(getCardImage(oppFrontList.get(i), " "));
         }
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        for (Card card : oppFrontList) {
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   |   |");
+        printField(oppFrontImages);
+
+        //Print current Front field
+        ArrayList<ArrayList<String>> currFrontImages = new ArrayList<>();
+        for(int i = 0; i < currFrontList.size(); i++){
+            currFrontImages.add(getCardImage(currFrontList.get(i), Integer.toString(i)));
         }
-        System.out.println();
-        for (Card ignored : oppBack) {
-            System.out.print("   |   |");
+        printField(currFrontImages);
+
+        //Print current back field
+        ArrayList<ArrayList<String>> currBackImages = new ArrayList<>();
+        for(int i = 0; i < currBackList.size(); i++){
+            currBackImages.add(getCardImage(currBackList.get(i), Integer.toString(i)));
         }
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        for (int i = 0; i < currFront.length; i++) {
-            Card card = currFront[i];
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   | " + (i + 1) +" |");
-        }
-        System.out.println();
-        for (Card ignored : oppBack) {
-            System.out.print("   |   |");
-        }
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        for (int i = 0; i < currBack.length; i++) {
-            Card card = currBack[i];
-            if (card != null) System.out.print("   |" + card.getName().substring(0, 3) + "|"); else System.out.print("   | " + (i + 1) +" |");
-        }
-        System.out.println();
-        for (Card ignored : oppBack) {
-            System.out.print("   |   |");
-        }
-        System.out.println();
-        System.out.print(StringUtils.repeat("   -----", Player.FIELD_LEN));
-        System.out.println();
-        System.out.println();
+        printField(currBackImages);
+
+
     }
 
-    private void printCard(Card card) {
+    private void printField(ArrayList<ArrayList<String>> fieldImages){
+        ArrayList<String> line1 = new ArrayList<>();
+        ArrayList<String> line2 = new ArrayList<>();
+        ArrayList<String> line3 = new ArrayList<>();
+        ArrayList<String> line4 = new ArrayList<>();
+        for(ArrayList<String> image : fieldImages) {
+            line1.add(image.get(0));
+            line2.add(image.get(1));
+            line3.add(image.get(2));
+            line4.add(image.get(3));
+        }
+
+        System.out.println(StringUtils.join(line1, "   "));
+        System.out.println(StringUtils.join(line2, "   "));
+        System.out.println(StringUtils.join(line3, "   "));
+        System.out.println(StringUtils.join(line4, "   "));
+
+    }
+
+    private ArrayList<String> getCardImage(Card card, String boardSpot){
+        ArrayList<String> cardList = new ArrayList<>();
+        cardList.add("-----");
+        cardList.add(card != null ? "|" + card.getName().substring(0, 3) + "|" : "| " + boardSpot +" |");
+        cardList.add("|   |");
+        cardList.add("-----");
+        return cardList;
+    }
+
+    private void printCardDesc(Card card) {
         System.out.println(card.getName() + ":\n  " + card.getDescription());
     }
 }
