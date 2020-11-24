@@ -1,6 +1,6 @@
 package Card_Game.Cards.CardTypes.Spell;
 
-import Card_Game.Abilities.AbilRunScen;
+import Card_Game.Abilities.AbilRunScene;
 import Card_Game.Abilities.Ability;
 
 import javax.annotation.Nonnull;
@@ -13,7 +13,7 @@ public class OneUseSpell extends Spell {
     @Override
     public boolean addAbility(Ability ability) {
         boolean ret = super.addAbility(ability);
-        ability.setRunScen(AbilRunScen.PLAY);
+        ability.setRunScene(AbilRunScene.PLAY);
         return ret;
     }
 }

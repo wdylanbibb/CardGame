@@ -1,5 +1,5 @@
 package Card_Game.Abilities;
 
-public enum AbilRunScen {
+public enum AbilRunScene {
     PLAY, DEATH, TURNSTART, TURNEND, USE
 }

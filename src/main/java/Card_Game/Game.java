@@ -1,7 +1,7 @@
 package Card_Game;
 
 
-import Card_Game.Abilities.AbilRunScen;
+import Card_Game.Abilities.AbilRunScene;
 import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
@@ -36,10 +36,11 @@ public class Game {
         game.run();
     }
 
-    public void run() throws IOException {
+    public void run() {
 
         int currPlayer = 0;
-        ArrayList<String> words = new ArrayList<>();
+        ArrayList<String> words;
+        boolean endGame = false;
         do{
 
             boolean endTurn = false;
@@ -50,18 +51,18 @@ public class Game {
                 System.out.print(beginningTurn ? "Player " + (currPlayer + 1) + "'s Turn\n" : "");
                 System.out.println(player.getMana() + " Mana Left");
 
-                ArrayList<Card> cardsDrew = (ArrayList<Card>) player.multiNoManaDraw(player.init_draw);
-                System.out.println("You drew:\n    " + StringUtils.join(cardsDrew, ", "));
 
                 if (beginningTurn) {
                     printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
+                    ArrayList<Card> cardsDrew = (ArrayList<Card>) player.multiNoManaDraw(player.init_draw);
+                    System.out.println("You drew:\n    " + StringUtils.join(cardsDrew.stream().map(Card::getName).collect(Collectors.toList()), ", "));
                     System.out.print("Your hand:\n");
                     printHand(player);
                     GameComponents
                             .getInstance()
                             .getSelfFieldCards(player)
                             .forEach(card -> card
-                                    .getAbilitiesFromScene(AbilRunScen.TURNSTART)
+                                    .getAbilitiesFromScene(AbilRunScene.TURNSTART)
                                     .forEach(Ability::run));
                 }
 
@@ -69,83 +70,17 @@ public class Game {
                 beginningTurn = false;
 
                 words = Parser.parser();
-                if (!words.isEmpty()){
-                    switch (words.get(0).toLowerCase()) {
-                        case "play":
-                            try {
-                                int num = Integer.parseInt(words.get(words.size() - 1)) - 1;
-                                try {
-                                    Card cardPlayed = Parser.parseCardFromHand(player, words.subList(1, words.size() - 1));
-                                    if (GameComponents.getInstance().canPlay(cardPlayed)) {
-                                        playCard(player, cardPlayed, num);
-                                        cardPlayed.getAbilitiesFromScene(AbilRunScen.PLAY).forEach(Ability::run);
-                                    } else {
-                                        System.out.println("Card cannot be played right now because of a rule set by another card.");
-                                    }
-                                } catch (IndexOutOfBoundsException e) {
-                                    System.out.println("Card not found");
-                                }
-                            } catch (NumberFormatException exc) {
-                                try {
-                                    Parser.parseCardFromHand(player, words.subList(1, words.size()));
-                                    System.out.println("Please input the name of a card and a number space to play it in on the field.");
-                                } catch (IndexOutOfBoundsException e) {
-                                    System.out.println("Card not found");
-                                }
-                            }
-                            break;
-                        case "draw":
-                            Card cardDrawn = player.draw();
-                            System.out.print(cardDrawn != null ? "You drew " + cardDrawn.getName() + "\n" : "");
-                            break;
-                        case "end":
-                        case "quit":
+                CommandParser commandParser = new CommandParser(words, player, this, currPlayer + 1, players);
+                if (!words.isEmpty()) {
+                    switch (commandParser.parseCmd()) {
+                        case CommandParser.CONTINUE:
+                            continue;
+                        case CommandParser.END_TURN:
                             endTurn = true;
                             break;
-                        case "info":
-                            if(words.size() > 1){
-                                printCardDesc(Parser.parseCardFromFieldOrHand(player, words.subList(1, words.size())));
-                            }else {
-                                System.out.print("Player " + (currPlayer + 1) + "'s Turn\n");
-                                System.out.println(player.getMana() + " Mana Left");
-                                System.out.print("Your hand:\n");
-                                printHand(player);
-                            }
-                            break;
-                        case "attack":
-                            if(words.size() > 1){
-                                if(words.get(1).equalsIgnoreCase("help")){
-                                    System.out.println("'attack <friendly lane> <enemy lane>");
-                                }else{
-                                    if(words.size() == 3){
-                                        if(StringUtils.isNumeric(words.get(1)) && StringUtils.isNumeric(words.get(2))){
-                                            try{
-                                                Monster monster = player.getField().getMonsters()[Integer.parseInt(words.get(1))-1];
-                                                Monster target = players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1].getField().getMonsters()[5-Integer.parseInt(words.get(2))];
-                                                if(monster != null && target != null){
-                                                    boolean killed = monster.attack(target);
-                                                    System.out.println(monster.getName() + " attacked " + target.getName() + " for " + monster.getAtk() + " damage!");
-                                                    if(killed) {
-                                                        System.out.println(target.getName() + " has died!");
-                                                        target.getAbilitiesFromScene(AbilRunScen.DEATH).forEach(Ability::run);
-                                                    }
-                                                    players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1].checkForDead();
-                                                    printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
-                                                }else{
-                                                    System.out.println("No Monster in Lane. Command: 'attack <friendly lane> <enemy lane>");
-                                                }
-
-                                            }catch (IndexOutOfBoundsException e){
-                                                System.out.println("Lane out of bounds. Command: 'attack <friendly lane> <enemy lane>");
-                                            }
-                                        }else{
-                                            System.out.println("Incorrect syntax. Command: 'attack <friendly lane> <enemy lane>");
-                                        }
-                                    }else{
-                                        System.out.println("Incorrect format (see 'attack help' for details)");
-                                    }
-                                }
-                            }
+                        case CommandParser.END_GAME:
+                            endTurn = true;
+                            endGame = true;
                             break;
                         default:
                             Class<? extends Ability> cls = UtilMaps.getInstance().getAbilityByString(words.get(0));
@@ -157,7 +92,6 @@ public class Game {
                                     System.out.println("Card not found on field");
                                 }
                             }
-                            break;
                     }
                 }
             }
@@ -166,20 +100,20 @@ public class Game {
                         .getInstance()
                         .getSelfFieldCards(player)
                         .forEach(card -> card
-                                .getAbilitiesFromScene(AbilRunScen.TURNEND)
+                                .getAbilitiesFromScene(AbilRunScene.TURNEND)
                                 .forEach(Ability::run));
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
-        }while(!words.get(0).equalsIgnoreCase("quit"));
+        }while(!endGame);
 
     }
 
-    private void printHand(Player player) throws IOException {
+    public void printHand(Player player) {
         for (Card card : player.getHand()) {
             System.out.println("  " + card.getName());
         }
     }
 
-    private void playCard(Player player, Card card, int num) {
+    public void playCard(Player player, Card card, int num) {
         if (num <= Player.FIELD_LEN) {
             if(player.play(card, num)){
                 System.out.println("Played " + card.getName());
@@ -192,7 +126,7 @@ public class Game {
         }
     }
 
-    private void printBoard(Player current, Player opposite) {
+    public void printBoard(Player current, Player opposite) {
         Field oppField = (Field) GameComponents.getInstance().getPlayerContainer(opposite, Field.class);
         Field currField = (Field) GameComponents.getInstance().getPlayerContainer(current, Field.class);
         Card[] oppBack = oppField.getBottomRow();
@@ -267,7 +201,7 @@ public class Game {
         return cardList;
     }
 
-    private void printCardDesc(Card card) {
+    public void printCardDesc(Card card) {
         System.out.println(card.getName() + ":\n  " + card.getDescription());
     }
 }

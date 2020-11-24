@@ -1,9 +1,7 @@
-Card_Game/Abilities/Abils/SampleAbility.java
- Card_Game.Abilities.Abils.SampleAbility
+Card_Game/CommandParser.java
+ Card_Game.CommandParser
 Card_Game/UtilMaps.java
  Card_Game.UtilMaps
-Card_Game/Abilities/Abils/base/Scry.java
- Card_Game.Abilities.Abils.base.Scry
 Card_Game/CardContainers/CardContainer.java
  Card_Game.CardContainers.CardContainer
 Card_Game/JsonAccessor.java
@@ -12,8 +10,6 @@ Card_Game/Cards/CardTypes/Spell/OneUseSpell.java
  Card_Game.Cards.CardTypes.Spell.OneUseSpell
 Card_Game/Abilities/Runnable.java
  Card_Game.Abilities.Runnable
-Card_Game/CardContainers/Field.java
- Card_Game.CardContainers.Field
 Card_Game/Rules/RuleUtils.java
  Card_Game.Rules.RuleUtils
  Card_Game.Rules.RuleUtils$1
@@ -25,27 +21,33 @@ Card_Game/Abilities/Ability.java
  Card_Game.Abilities.Ability
 Card_Game/CardContainers/Deck.java
  Card_Game.CardContainers.Deck
-Card_Game/Cards/CardTypes/Monster/Monster.java
- Card_Game.Cards.CardTypes.Monster.Monster
-Card_Game/Cards/CardTypes/Spell/Spell.java
- Card_Game.Cards.CardTypes.Spell.Spell
 Card_Game/Cards/Attackable.java
  Card_Game.Cards.Attackable
-Card_Game/Parser.java
- Card_Game.Parser
 Card_Game/CardContainers/Discard.java
  Card_Game.CardContainers.Discard
 Card_Game/Player.java
  Card_Game.Player
 Card_Game/CardContainers/Hand.java
  Card_Game.CardContainers.Hand
-Card_Game/GameComponents.java
- Card_Game.GameComponents
 Card_Game/Rules/Rule.java
  Card_Game.Rules.Rule
-Card_Game/Cards/Card.java
- Card_Game.Cards.Card
-Card_Game/Abilities/AbilRunScen.java
- Card_Game.Abilities.AbilRunScen
 Card_Game/Game.java
  Card_Game.Game
+Card_Game/Abilities/Abils/base/Scry.java
+ Card_Game.Abilities.Abils.base.Scry
+Card_Game/CardContainers/Field.java
+ Card_Game.CardContainers.Field
+Card_Game/Cards/CardTypes/Monster/Monster.java
+ Card_Game.Cards.CardTypes.Monster.Monster
+Card_Game/Cards/CardTypes/Spell/Spell.java
+ Card_Game.Cards.CardTypes.Spell.Spell
+Card_Game/Parser.java
+ Card_Game.Parser
+Card_Game/GameComponents.java
+ Card_Game.GameComponents
+Card_Game/Cards/Card.java
+ Card_Game.Cards.Card
+Card_Game/Abilities/AbilRunScene.java
+ Card_Game.Abilities.AbilRunScene
+Card_Game/Abilities/Abils/SampleAbility.java
+ Card_Game.Abilities.Abils.SampleAbility

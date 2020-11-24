@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 
 public abstract class Ability implements Runnable {
 
-    public AbilRunScen runScen = AbilRunScen.USE;
+    public AbilRunScene runScen = AbilRunScene.USE;
     public Card card;
 
     public Ability(JsonArray array, Card card) {
@@ -15,11 +15,11 @@ public abstract class Ability implements Runnable {
     @Override
     public abstract void run();
 
-    public AbilRunScen getRunScen() {
+    public AbilRunScene getRunScene() {
         return runScen;
     }
 
-    public void setRunScen(AbilRunScen runScen) {
+    public void setRunScene(AbilRunScene runScen) {
         this.runScen = runScen;
     }
 

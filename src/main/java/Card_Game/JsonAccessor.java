@@ -168,7 +168,7 @@ public class JsonAccessor {
                         if (UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()) != null) {
                             Ability abil = UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
                             if(ability.getAsJsonObject().get("scene") != null) {
-                                abil.setRunScen(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString().toLowerCase()));
+                                abil.setRunScene(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scene").getAsString().toLowerCase()));
                             }
                             card.addAbility(abil);
                         }

@@ -1,6 +1,6 @@
 package Card_Game;
 
-import Card_Game.Abilities.AbilRunScen;
+import Card_Game.Abilities.AbilRunScene;
 import Card_Game.Abilities.Ability;
 import Card_Game.Cards.Card;
 import Card_Game.Cards.CardTypes.Monster.Monster;
@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UtilMaps {
 
     private static UtilMaps INSTANCE;
-    private static Map<String, AbilRunScen> abilMap;
+    private static Map<String, AbilRunScene> abilMap;
     private static Map<String, Class<? extends Card>> cardTypes;
     private static Map<String, RuleUtils.CompareAttr> comparisonsMap;
     private static Map<String, RuleUtils.PlayerEffect> playerEffects;
@@ -27,11 +26,11 @@ public class UtilMaps {
 
     public UtilMaps(){
         abilMap = new HashMap<>();
-        abilMap.put("onplay", AbilRunScen.PLAY);
-        abilMap.put("ondeath", AbilRunScen.DEATH);
-        abilMap.put("turnstart", AbilRunScen.TURNSTART);
-        abilMap.put("turnend", AbilRunScen.TURNEND);
-        abilMap.put("use", AbilRunScen.USE);
+        abilMap.put("onplay", AbilRunScene.PLAY);
+        abilMap.put("ondeath", AbilRunScene.DEATH);
+        abilMap.put("turnstart", AbilRunScene.TURNSTART);
+        abilMap.put("turnend", AbilRunScene.TURNEND);
+        abilMap.put("use", AbilRunScene.USE);
 
         cardTypes = new HashMap<>();
         cardTypes.put("monster", Monster.class);
@@ -66,8 +65,8 @@ public class UtilMaps {
         return INSTANCE;
     }
 
-    public AbilRunScen getAbilRunScen(String scene){
-        return abilMap.getOrDefault(scene, AbilRunScen.USE);
+    public AbilRunScene getAbilRunScen(String scene){
+        return abilMap.getOrDefault(scene, AbilRunScene.USE);
     }
 
     public Class<? extends Card> getCardTypeByStr(String type){
