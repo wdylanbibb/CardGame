@@ -7,6 +7,8 @@ import Card_Game.CardContainers.Hand;
 import Card_Game.Cards.Card;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -15,6 +17,7 @@ public class Player {
     public static final int STARTING_HAND = 5;
     public static final int FIELD_LEN = 5;
     public static int MAX_MANA = 3;
+    public int init_draw = 1;
     private int mana;
 
     private final Deck deck;
@@ -30,11 +33,17 @@ public class Player {
         discard = new Discard();
         field = new Field(FIELD_LEN);
         mana = MAX_MANA;
-        IntStream.rangeClosed(1, STARTING_HAND).forEach(i -> initDraw());
+        multiNoManaDraw(STARTING_HAND);
     }
 
-    private void initDraw() {
-        hand.add(deck.draw());
+    public List<Card> multiNoManaDraw(int num) {
+        ArrayList<Card> returnList = new ArrayList<>();
+        for(int i=0;i<num;i++) {
+            Card card = deck.draw();
+            hand.add(card);
+            returnList.add(card);
+        }
+        return returnList;
     }
 
     public Card draw() {

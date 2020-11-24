@@ -2,6 +2,8 @@ Card_Game/Game.java
  Card_Game.Game
 Card_Game/UtilMaps.java
  Card_Game.UtilMaps
+Card_Game/Abilities/Abils/base/Scry.java
+ Card_Game.Abilities.Abils.base.Scry
 Card_Game/CardContainers/CardContainer.java
  Card_Game.CardContainers.CardContainer
 Card_Game/JsonAccessor.java
@@ -12,12 +14,15 @@ Card_Game/Abilities/Runnable.java
  Card_Game.Abilities.Runnable
 Card_Game/CardContainers/Field.java
  Card_Game.CardContainers.Field
-Card_Game/Abilities/Abils/Scry.java
- Card_Game.Abilities.Abils.Scry
-Card_Game/Abilities/Ability.java
- Card_Game.Abilities.Ability
+Card_Game/Rules/RuleUtils.java
+ Card_Game.Rules.RuleUtils
+ Card_Game.Rules.RuleUtils$1
+ Card_Game.Rules.RuleUtils$CompareAttr
+ Card_Game.Rules.RuleUtils$PlayerEffect
 Card_Game/Cards/Playable.java
  Card_Game.Cards.Playable
+Card_Game/Abilities/Ability.java
+ Card_Game.Abilities.Ability
 Card_Game/CardContainers/Deck.java
  Card_Game.CardContainers.Deck
 Card_Game/Cards/CardTypes/Monster/Monster.java
@@ -34,9 +39,13 @@ Card_Game/Player.java
  Card_Game.Player
 Card_Game/CardContainers/Hand.java
  Card_Game.CardContainers.Hand
-Card_Game/Cards/Card.java
- Card_Game.Cards.Card
 Card_Game/GameComponents.java
  Card_Game.GameComponents
+Card_Game/Rules/Rule.java
+ Card_Game.Rules.Rule
+Card_Game/Cards/Card.java
+ Card_Game.Cards.Card
 Card_Game/Abilities/AbilRunScen.java
  Card_Game.Abilities.AbilRunScen
+Card_Game/Abilities/Abils/SampleAbility.java
+ Card_Game.Abilities.Abils.SampleAbility

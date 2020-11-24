@@ -49,6 +49,10 @@ public class Game {
             while (!endTurn){
                 System.out.print(beginningTurn ? "Player " + (currPlayer + 1) + "'s Turn\n" : "");
                 System.out.println(player.getMana() + " Mana Left");
+
+                ArrayList<Card> cardsDrew = (ArrayList<Card>) player.multiNoManaDraw(player.init_draw);
+                System.out.println("You drew:\n    " + StringUtils.join(cardsDrew, ", "));
+
                 if (beginningTurn) {
                     printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
                     System.out.print("Your hand:\n");

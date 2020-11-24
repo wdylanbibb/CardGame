@@ -159,6 +159,6 @@ public class Card implements Playable{
             image = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File("external_data/default.png")));
         }
 
-        System.out.println(name + "\n\n" + image + "\n\n\n\n");
+//        System.out.println(name + "\n\n" + image + "\n\n\n\n");
     }
 }
