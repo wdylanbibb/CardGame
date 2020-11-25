@@ -55,7 +55,7 @@ class CommandParser {
                 Card cardPlayed = Parser.parseCardFromHand(player, words.subList(1, words.size() - 1));
                 if (GameComponents.getInstance().canPlay(cardPlayed)) {
                     game.playCard(player, cardPlayed, num);
-                    cardPlayed.getAbilitiesFromScene(AbilityRunListener.PLAY).forEach(Ability::run);
+                    cardPlayed.getAbilitiesFromListener(AbilityRunListener.PLAY).forEach(Ability::run);
                 } else {
                     System.out.println("Card cannot be played right now because of a rule set by another card.");
                 }
@@ -114,7 +114,7 @@ class CommandParser {
                                 System.out.println(monster.getName() + " attacked " + target.getName() + " for " + monster.getAtk() + " damage!");
                                 if(killed) {
                                     System.out.println(target.getName() + " has died!");
-                                    target.getAbilitiesFromScene(AbilityRunListener.DEATH).forEach(Ability::run);
+                                    target.getAbilitiesFromListener(AbilityRunListener.DEATH).forEach(Ability::run);
                                 }
                                 players[playerNum >= players.length ? 0 : playerNum].checkForDead();
                                 game.printBoard(player, players[playerNum >= players.length ? 0 : playerNum]);

@@ -61,7 +61,7 @@ public class Game {
                             .getInstance()
                             .getSelfFieldCards(player)
                             .forEach(card -> card
-                                    .getAbilitiesFromScene(AbilityRunListener.TURNSTART)
+                                    .getAbilitiesFromListener(AbilityRunListener.TURNSTART)
                                     .forEach(Ability::run));
                 }
 
@@ -99,7 +99,7 @@ public class Game {
                         .getInstance()
                         .getSelfFieldCards(player)
                         .forEach(card -> card
-                                .getAbilitiesFromScene(AbilityRunListener.TURNEND)
+                                .getAbilitiesFromListener(AbilityRunListener.TURNEND)
                                 .forEach(Ability::run));
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
         }while(!endGame);

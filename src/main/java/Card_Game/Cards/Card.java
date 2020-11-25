@@ -117,7 +117,7 @@ public class Card implements Playable{
         return null;
     }
 
-    public List<Ability> getAbilitiesFromScene(AbilityRunListener scene){
+    public List<Ability> getAbilitiesFromListener(AbilityRunListener scene){
         return abils.stream().filter(ability -> ability.getRunListener()==scene).collect(Collectors.toList());
     }
 
