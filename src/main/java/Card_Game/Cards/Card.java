@@ -1,6 +1,6 @@
 package Card_Game.Cards;
 
-import Card_Game.Abilities.AbilRunScene;
+import Card_Game.Abilities.AbilityRunListener;
 import Card_Game.Abilities.Ability;
 import Card_Game.GameComponents;
 import Card_Game.Player;
@@ -117,8 +117,8 @@ public class Card implements Playable{
         return null;
     }
 
-    public List<Ability> getAbilitiesFromScene(AbilRunScene scene){
-        return abils.stream().filter(ability -> ability.getRunScene()==scene).collect(Collectors.toList());
+    public List<Ability> getAbilitiesFromScene(AbilityRunListener scene){
+        return abils.stream().filter(ability -> ability.getRunListener()==scene).collect(Collectors.toList());
     }
 
     public void setParams(JsonObject params) {

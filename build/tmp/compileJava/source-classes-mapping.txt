@@ -31,6 +31,8 @@ Card_Game/CardContainers/Hand.java
  Card_Game.CardContainers.Hand
 Card_Game/Rules/Rule.java
  Card_Game.Rules.Rule
+Card_Game/Abilities/AbilityRunListener.java
+ Card_Game.Abilities.AbilityRunListener
 Card_Game/Game.java
  Card_Game.Game
 Card_Game/Abilities/Abils/base/Scry.java
@@ -47,7 +49,5 @@ Card_Game/GameComponents.java
  Card_Game.GameComponents
 Card_Game/Cards/Card.java
  Card_Game.Cards.Card
-Card_Game/Abilities/AbilRunScene.java
- Card_Game.Abilities.AbilRunScene
 Card_Game/Abilities/Abils/SampleAbility.java
  Card_Game.Abilities.Abils.SampleAbility

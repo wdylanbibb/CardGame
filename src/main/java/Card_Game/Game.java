@@ -1,11 +1,10 @@
 package Card_Game;
 
 
-import Card_Game.Abilities.AbilRunScene;
+import Card_Game.Abilities.AbilityRunListener;
 import Card_Game.Abilities.Ability;
 import Card_Game.CardContainers.Field;
 import Card_Game.Cards.Card;
-import Card_Game.Cards.CardTypes.Monster.Monster;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class Game {
                             .getInstance()
                             .getSelfFieldCards(player)
                             .forEach(card -> card
-                                    .getAbilitiesFromScene(AbilRunScene.TURNSTART)
+                                    .getAbilitiesFromScene(AbilityRunListener.TURNSTART)
                                     .forEach(Ability::run));
                 }
 
@@ -100,7 +99,7 @@ public class Game {
                         .getInstance()
                         .getSelfFieldCards(player)
                         .forEach(card -> card
-                                .getAbilitiesFromScene(AbilRunScene.TURNEND)
+                                .getAbilitiesFromScene(AbilityRunListener.TURNEND)
                                 .forEach(Ability::run));
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
         }while(!endGame);
