@@ -130,4 +130,20 @@ public class Player {
     public void setInitDraw(int init_draw) {
         this.init_draw = init_draw;
     }
+
+    public void addHealth(int health){
+        this.health+=health;
+    }
+
+    public void removeHealth(int health){
+        this.health-=health;
+    }
+
+    public void addMaxHealth(int max_health){
+        this.max_health+=max_health;
+    }
+
+    public void removeMaxHealth(int max_health){
+        this.max_health-=max_health;
+    }
 }
