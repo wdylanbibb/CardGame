@@ -21,14 +21,14 @@ cardgame/cardcontainers/Discard.java
  cardgame.cardcontainers.Discard
 cardgame/GameComponents.java
  cardgame.GameComponents
-cardgame/rules/Rule.java
- cardgame.rules.Rule
+cardgame/CommandParser.java
+ cardgame.CommandParser
 cardgame/cards/cardtypes/Spell/OneUseSpell.java
  cardgame.cards.cardtypes.Spell.OneUseSpell
 cardgame/abilities/abils/SampleAbility.java
  cardgame.abilities.abils.SampleAbility
-cardgame/abilities/abils/base/Scry.java
- cardgame.abilities.abils.base.Scry
+cardgame/Game.java
+ cardgame.Game
 cardgame/cards/Card.java
  cardgame.cards.Card
 cardgame/abilities/Runnable.java
@@ -47,7 +47,5 @@ cardgame/JsonAccessor.java
  cardgame.JsonAccessor
 cardgame/cards/cardtypes/Monster/Monster.java
  cardgame.cards.cardtypes.Monster.Monster
-cardgame/Game.java
- cardgame.Game
-cardgame/CommandParser.java
- cardgame.CommandParser
+cardgame/rules/Rule.java
+ cardgame.rules.Rule

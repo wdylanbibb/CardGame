@@ -8,12 +8,16 @@ import com.google.gson.*;
 
 public class Scry extends Ability {
 
-    private int num;
+    int num;
 
-    public Scry(JsonArray array, Card card) {
-        super(array, card);
+    public Scry(JsonObject args, Card card) {
+        super(args, card);
+        if (args == null) {
+            card.removeAbility(this);
+            return;
+        }
         try {
-            num = array.get(0).getAsInt();
+            num = args.get("num").getAsInt();
         } catch (Exception exc) {
             card.removeAbility(this);
         }

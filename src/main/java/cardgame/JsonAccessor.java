@@ -34,7 +34,6 @@ public class JsonAccessor {
 
     private static NodeList<ImportDeclaration> imports;
 
-
     public static void fillMaps() throws IOException {
         if (gson == null) gson = new Gson();
         Map<String, Class<? extends Ability>> abilList = new HashMap<>();
@@ -146,13 +145,15 @@ public class JsonAccessor {
     }
 
     private static void applyRules(JsonArray rules, Card card) {
+        card.setRules(new ArrayList<>());
         if (rules != null) {
             for (JsonElement rule : rules) {
                 if (rule.isJsonObject()) {
                     try {
+
                         Rule r = gson.fromJson(rule, Rule.class);
                         r.setEnums();
-                        card.setRules(new ArrayList<>());
+
                         card.addRule(r);
                     } catch (Exception ignored) {}
                 }
@@ -166,7 +167,16 @@ public class JsonAccessor {
                 if (ability.isJsonObject()) {
                     try {
                         if (UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()) != null) {
-                            Ability abil = UtilMaps.getInstance().getAbilityByString(ability.getAsJsonObject().get("abil").getAsString().toLowerCase()).getConstructor(JsonArray.class, Card.class).newInstance(ability.getAsJsonObject().getAsJsonArray("args"), card);
+                            Ability abil = UtilMaps
+                                    .getInstance()
+                                    .getAbilityByString(ability
+                                            .getAsJsonObject()
+                                            .get("abil")
+                                            .getAsString()
+                                            .toLowerCase()
+                                    )
+                                    .getConstructor(JsonObject.class, Card.class)
+                                    .newInstance(ability.getAsJsonObject().get("args").getAsJsonObject(), card);
                             if(ability.getAsJsonObject().get("scen") != null) {
                                 abil.setRunListener(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scen").getAsString().toLowerCase()));
                             }

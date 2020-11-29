@@ -1,18 +1,23 @@
 package base.abilities;
 
-import cardgame.Player;
-import cardgame.abilities.Ability;
-import cardgame.cards.Card;
-import com.google.gson.JsonArray;
+import cardgame.*;
+import cardgame.abilities.*;
+import cardgame.cardcontainers.*;
+import cardgame.cards.*;
+import com.google.gson.*;
 
 public class GainHealth extends Ability {
 
     int num;
 
-    public GainHealth(JsonArray array, Card card) {
-        super(array, card);
+    public GainHealth(JsonObject args, Card card) {
+        super(args, card);
+        if(args==null){
+            card.removeAbility(this);
+            return;
+        }
         try {
-            num = array.get(0).getAsInt();
+            num = args.get("num").getAsInt();
         } catch (Exception exc) {
             card.removeAbility(this);
         }

@@ -15,7 +15,8 @@ public class Player {
     public static final int STARTING_HAND = 5;
     public static final int FIELD_LEN = 5;
     public static int MAX_MANA = 3;
-    private int max_health = 20;
+    public static int BASE_MAX_HEALTH = 20;
+    private int max_health;
     private int init_draw = 1;
     private int mana;
     private int health;
@@ -33,6 +34,7 @@ public class Player {
         discard = new Discard();
         field = new Field(FIELD_LEN);
         mana = MAX_MANA;
+        max_health = BASE_MAX_HEALTH;
         health = max_health;
         multiNoManaDraw(STARTING_HAND);
     }
@@ -132,11 +134,11 @@ public class Player {
     }
 
     public void addHealth(int health){
-        this.health+=health;
+        this.health=Math.min(this.health + health, max_health);
     }
 
     public void removeHealth(int health){
-        this.health-=health;
+        this.health=Math.max(this.health - health, 0);
     }
 
     public void addMaxHealth(int max_health){
@@ -145,5 +147,13 @@ public class Player {
 
     public void removeMaxHealth(int max_health){
         this.max_health-=max_health;
+    }
+
+    public void resetMaxHealth(){
+        max_health = BASE_MAX_HEALTH;
+    }
+
+    public void resetHealth(){
+        health = max_health;
     }
 }
