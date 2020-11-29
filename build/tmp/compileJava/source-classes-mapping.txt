@@ -1,53 +1,53 @@
-Card_Game/CommandParser.java
- Card_Game.CommandParser
-Card_Game/UtilMaps.java
- Card_Game.UtilMaps
-Card_Game/CardContainers/CardContainer.java
- Card_Game.CardContainers.CardContainer
-Card_Game/JsonAccessor.java
- Card_Game.JsonAccessor
-Card_Game/Cards/CardTypes/Spell/OneUseSpell.java
- Card_Game.Cards.CardTypes.Spell.OneUseSpell
-Card_Game/Abilities/Runnable.java
- Card_Game.Abilities.Runnable
-Card_Game/Rules/RuleUtils.java
- Card_Game.Rules.RuleUtils
- Card_Game.Rules.RuleUtils$1
- Card_Game.Rules.RuleUtils$CompareAttr
- Card_Game.Rules.RuleUtils$PlayerEffect
-Card_Game/Cards/Playable.java
- Card_Game.Cards.Playable
-Card_Game/Abilities/Ability.java
- Card_Game.Abilities.Ability
-Card_Game/CardContainers/Deck.java
- Card_Game.CardContainers.Deck
-Card_Game/Cards/Attackable.java
- Card_Game.Cards.Attackable
-Card_Game/CardContainers/Discard.java
- Card_Game.CardContainers.Discard
-Card_Game/Player.java
- Card_Game.Player
-Card_Game/CardContainers/Hand.java
- Card_Game.CardContainers.Hand
-Card_Game/Rules/Rule.java
- Card_Game.Rules.Rule
-Card_Game/Abilities/AbilityRunListener.java
- Card_Game.Abilities.AbilityRunListener
-Card_Game/Game.java
- Card_Game.Game
-Card_Game/Abilities/Abils/base/Scry.java
- Card_Game.Abilities.Abils.base.Scry
-Card_Game/CardContainers/Field.java
- Card_Game.CardContainers.Field
-Card_Game/Cards/CardTypes/Monster/Monster.java
- Card_Game.Cards.CardTypes.Monster.Monster
-Card_Game/Cards/CardTypes/Spell/Spell.java
- Card_Game.Cards.CardTypes.Spell.Spell
-Card_Game/Parser.java
- Card_Game.Parser
-Card_Game/GameComponents.java
- Card_Game.GameComponents
-Card_Game/Cards/Card.java
- Card_Game.Cards.Card
-Card_Game/Abilities/Abils/SampleAbility.java
- Card_Game.Abilities.Abils.SampleAbility
+cardgame/cards/cardtypes/Spell/Spell.java
+ cardgame.cards.cardtypes.Spell.Spell
+cardgame/abilities/Ability.java
+ cardgame.abilities.Ability
+cardgame/Player.java
+ cardgame.Player
+cardgame/cards/Attackable.java
+ cardgame.cards.Attackable
+cardgame/cardcontainers/Field.java
+ cardgame.cardcontainers.Field
+cardgame/rules/RuleUtils.java
+ cardgame.rules.RuleUtils
+ cardgame.rules.RuleUtils$1
+ cardgame.rules.RuleUtils$CompareAttr
+ cardgame.rules.RuleUtils$PlayerEffect
+cardgame/cardcontainers/CardContainer.java
+ cardgame.cardcontainers.CardContainer
+cardgame/abilities/AbilityRunListener.java
+ cardgame.abilities.AbilityRunListener
+cardgame/cardcontainers/Discard.java
+ cardgame.cardcontainers.Discard
+cardgame/GameComponents.java
+ cardgame.GameComponents
+cardgame/rules/Rule.java
+ cardgame.rules.Rule
+cardgame/cards/cardtypes/Spell/OneUseSpell.java
+ cardgame.cards.cardtypes.Spell.OneUseSpell
+cardgame/abilities/abils/SampleAbility.java
+ cardgame.abilities.abils.SampleAbility
+cardgame/abilities/abils/base/Scry.java
+ cardgame.abilities.abils.base.Scry
+cardgame/cards/Card.java
+ cardgame.cards.Card
+cardgame/abilities/Runnable.java
+ cardgame.abilities.Runnable
+cardgame/cardcontainers/Deck.java
+ cardgame.cardcontainers.Deck
+cardgame/UtilMaps.java
+ cardgame.UtilMaps
+cardgame/cards/Playable.java
+ cardgame.cards.Playable
+cardgame/cardcontainers/Hand.java
+ cardgame.cardcontainers.Hand
+cardgame/Parser.java
+ cardgame.Parser
+cardgame/JsonAccessor.java
+ cardgame.JsonAccessor
+cardgame/cards/cardtypes/Monster/Monster.java
+ cardgame.cards.cardtypes.Monster.Monster
+cardgame/Game.java
+ cardgame.Game
+cardgame/CommandParser.java
+ cardgame.CommandParser
