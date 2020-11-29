@@ -53,7 +53,7 @@ public class Game {
 
                 if (beginningTurn) {
                     printBoard(player, players[currPlayer + 1 >= players.length ? 0 : currPlayer + 1]);
-                    ArrayList<Card> cardsDrew = (ArrayList<Card>) player.multiNoManaDraw(player.init_draw);
+                    ArrayList<Card> cardsDrew = (ArrayList<Card>) player.multiNoManaDraw(player.getInitDraw());
                     System.out.println("You drew:\n    " + StringUtils.join(cardsDrew.stream().map(Card::getName).collect(Collectors.toList()), ", "));
                     System.out.print("Your hand:\n");
                     printHand(player);

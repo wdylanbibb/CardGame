@@ -15,8 +15,10 @@ public class Player {
     public static final int STARTING_HAND = 5;
     public static final int FIELD_LEN = 5;
     public static int MAX_MANA = 3;
-    public int init_draw = 1;
+    private int max_health = 20;
+    private int init_draw = 1;
     private int mana;
+    private int health;
 
     private final Deck deck;
     private final Hand hand;
@@ -31,6 +33,7 @@ public class Player {
         discard = new Discard();
         field = new Field(FIELD_LEN);
         mana = MAX_MANA;
+        health = max_health;
         multiNoManaDraw(STARTING_HAND);
     }
 
@@ -102,5 +105,29 @@ public class Player {
 
     public void checkForDead() {
         discard.addAll(field.checkField());
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getMaxHealth() {
+        return max_health;
+    }
+
+    public void setMaxHealth(int max_health) {
+        this.max_health = max_health;
+    }
+
+    public int getInitDraw() {
+        return init_draw;
+    }
+
+    public void setInitDraw(int init_draw) {
+        this.init_draw = init_draw;
     }
 }
