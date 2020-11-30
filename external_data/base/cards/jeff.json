@@ -7,7 +7,7 @@
   [
     {
       "abil": "scry",
-      "args": [1]
+      "args": {"num": 1}
     }
   ]
 }

@@ -5,6 +5,7 @@ import cardgame.cards.Card;
 import cardgame.rules.Rule;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameComponents {
 
@@ -75,5 +76,9 @@ public class GameComponents {
 
     public boolean canPlay(Card card) {
         return rules.stream().allMatch(rule -> rule.check(card));
+    }
+
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players.keySet());
     }
 }

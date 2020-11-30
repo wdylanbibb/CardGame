@@ -8,8 +8,8 @@ import com.google.gson.*;
 
 public class SampleAbility extends Ability {
 
-    public SampleAbility(JsonArray array, Card card) {
-        super(array, card);
+    public SampleAbility(JsonObject args, Card card) {
+        super(args, card);
     }
 
     @Override

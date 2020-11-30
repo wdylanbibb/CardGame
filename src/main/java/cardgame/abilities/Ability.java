@@ -1,15 +1,19 @@
 package cardgame.abilities;
 
 import cardgame.cards.Card;
-import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public abstract class Ability implements Runnable {
 
     public AbilityRunListener runListener = AbilityRunListener.USE;
     public Card card;
 
-    public Ability(JsonArray array, Card card) {
+    public Ability(JsonObject args, Card card) {
         this.card = card;
+        if (args == null) {
+            card.removeAbility(this);
+            return;
+        }
     }
 
     @Override
