@@ -32,11 +32,12 @@ public class GainHealth extends Ability {
     @Override
     public void run(Card target) {
         Player player = card.getPlayer();
-        System.out.println("Target description: " + target.getDescription());
+        player.addHealth(num);
     }
 
     @Override
     public String getName(){
         return "gainhealth";
+
     }
 }

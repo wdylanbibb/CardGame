@@ -5,6 +5,7 @@ import cardgame.cards.Card;
 import cardgame.rules.Rule;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameComponents {
 

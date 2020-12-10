@@ -15,6 +15,10 @@ public abstract class Ability implements Runnable {
 
     public Ability(JsonObject args, Card card) {
         this.card = card;
+        if (args == null) {
+            card.removeAbility(this);
+            return;
+        }
     }
 
     @Override

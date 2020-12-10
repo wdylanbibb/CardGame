@@ -1,4 +1,4 @@
-package cardgame.abilities.abils.base;
+package base.abilities;
 
 import cardgame.*;
 import cardgame.abilities.*;
@@ -12,10 +12,6 @@ public class Scry extends Ability {
 
     public Scry(JsonObject args, Card card) {
         super(args, card);
-        if(args==null){
-            card.removeAbility(this);
-            return;
-        }
         try {
             num = args.get("num").getAsInt();
         } catch (Exception exc) {
