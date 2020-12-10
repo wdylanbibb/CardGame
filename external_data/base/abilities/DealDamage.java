@@ -20,11 +20,16 @@ public class DealDamage extends Ability {
     }
 
     @Override
-    public void run() {
-        for (Player player : GameComponents.getInstance().getPlayers()) {
+    public void run(Card target) {
+        for (Player player : GameComponents.getInstance().getAllPlayers()) {
             if (player != card.getPlayer()) {
                 player.removeHealth(num);
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return "dealdamage";
     }
 }
