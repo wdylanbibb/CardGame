@@ -1,6 +1,7 @@
 package cardgame;
 
 import cardgame.abilities.Ability;
+import cardgame.attributes.Attribute;
 import cardgame.cardcontainers.Deck;
 import cardgame.cards.Card;
 import cardgame.rules.Rule;
@@ -37,6 +38,7 @@ public class JsonAccessor {
     public static void fillMaps() throws IOException {
         if (gson == null) gson = new Gson();
         Map<String, Class<? extends Ability>> abilList = new HashMap<>();
+        Map<String, Class<? extends Attribute>> attrList = new HashMap<>();
         Map<String, String> decks = new HashMap<>();
         Map<String, String> cards = new HashMap<>();
         File externalData = new File(DATA_DIR);
@@ -85,6 +87,41 @@ public class JsonAccessor {
                                             }
                                         });
                                         break;
+                                    case "attributes":
+                                        Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach((javaClass -> {
+                                            if (javaClass.isFile() && javaClass.getName().endsWith(".java") && !javaClass.getName().equals("SampleAttribute.java")) {
+                                                try {
+                                                    Reader reader = Files.newBufferedReader(Paths.get(javaClass.getPath()));
+                                                    CompilationUnit compilationUnit = StaticJavaParser.parse(reader);
+                                                    compilationUnit.setImports(imports);
+                                                    compilationUnit.setPackageDeclaration("cardgame.attributes.attr." + file.getName());
+                                                    try {
+                                                        File folder = new File("src/main/java/cardgame/attributes/attr/" + file.getName() + "/");
+                                                        folder.mkdir();
+                                                            final String fileName = "src/main/java/cardgame/attributes/attr/" + file.getName() + "/" + javaClass.getName();
+                                                            Writer fileWriter = Files.newBufferedWriter(Paths.get(fileName));
+                                                            fileWriter.write(compilationUnit.toString());
+                                                            fileWriter.close();
+                                                            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+                                                            int compResult = compiler.run(null, null, null, fileName);
+                                                            if (compResult == 0) {
+                                                                Logger.getLogger("files").info("Compilation successful!");
+                                                            } else {
+                                                                Logger.getLogger("files").info("Compilation failed");
+                                                            }
+                                                            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { new File("src/main/java").toURI().toURL() });
+                                                            Class cls = Class.forName("cardgame.attributes.attr." + file.getName() + "." + javaClass.getName().split(".java")[0], true, classLoader);
+                                                            if (Attribute.class.isAssignableFrom(cls)) {
+                                                                attrList.put(javaClass.getName().split(".java")[0].toLowerCase(), cls);
+                                                            }
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                } catch (ClassCastException | IOException | ClassNotFoundException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }));
                                     case "decks":
                                         Arrays.asList(Objects.requireNonNull(modFile.listFiles())).forEach(jsonFile -> {
                                             if (jsonFile.isFile() && jsonFile.getName().endsWith(".json")) {
@@ -106,6 +143,7 @@ public class JsonAccessor {
             });
         }
         UtilMaps.getInstance().fillAbilList(abilList);
+        UtilMaps.getInstance().fillAttrList(attrList);
         UtilMaps.getInstance().fillDeckList(decks);
         UtilMaps.getInstance().fillCardList(cards);
     }
@@ -122,20 +160,29 @@ public class JsonAccessor {
                     Reader fileReader = Files.newBufferedReader(Paths.get(UtilMaps.getInstance().getCardByName(fileName)));
                     JsonObject obj = gson.fromJson(fileReader, JsonObject.class);
                     Card card;
-                    Class<? extends Card> cls = UtilMaps.getInstance().getCardTypeByStr(obj.get("type").getAsString().toLowerCase());
+                    Class<? extends Card> cls = UtilMaps.getInstance().getCardClassByStr(obj.get("type").getAsString().toLowerCase());
                     if (cls != null) {
                         card = gson.fromJson(obj, cls);
                     } else {
                         card = gson.fromJson(obj, Card.class);
                     }
                     card.setParams(obj);
+                    card.setEmissionListeners();
                     card.setPlayer(player);
                     card.setAbils(new ArrayList<>());
                     JsonArray abilities = obj.getAsJsonArray("abilities");
                     applyAbil(abilities, card);
+
+                    card.setAttr(new ArrayList<>());
+                    JsonArray attributes = obj.getAsJsonArray("attributes");
+                    applyAttr(attributes, card);
+
                     JsonArray rules = obj.getAsJsonArray("rules");
                     applyRules(rules, card);
                     card.verifyImage();
+                    for(Ability ability : card.getAbils()){
+                        System.out.println("Target type: " + ability.getTargetType());
+                    }
                     deck.add(card);
                 } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
@@ -161,6 +208,42 @@ public class JsonAccessor {
         }
     }
 
+    public static void applyAttr(JsonArray attributes, Card card){
+        card.setAttr(new ArrayList<>());
+        if (attributes != null){
+            for (JsonElement attr : attributes){
+                if(attr.isJsonObject()){
+                    try{
+                        if (UtilMaps.getInstance().getAttrByString(attr.getAsJsonObject().get("attr").getAsString().toLowerCase()) != null) {
+                            Attribute attribute = UtilMaps
+                                    .getInstance()
+                                    .getAttrByString(attr
+                                            .getAsJsonObject()
+                                            .get("attr")
+                                            .getAsString()
+                                            .toLowerCase()
+                                    )
+                                    .getConstructor(JsonObject.class, Card.class)
+                                    .newInstance(attr.getAsJsonObject().get("args").getAsJsonObject(), card);
+                            if(attr.getAsJsonObject().get("target") != null) {
+                                attribute.setTarget(UtilMaps.getInstance().getPlayerByString(attr.getAsJsonObject().get("target").getAsString().toLowerCase()));
+                            }
+                            if(attr.getAsJsonObject().get("event") != null) {
+                                attribute.setEvent(UtilMaps.getInstance().getCardEvent(attr.getAsJsonObject().get("event").getAsString().toLowerCase()));
+                            }
+                            if(attr.getAsJsonObject().get("type") != null) {
+                                attribute.setType(UtilMaps.getInstance().getCardTypeByStr(attr.getAsJsonObject().get("type").getAsString().toLowerCase()));
+                            }
+                            card.addAttr(attribute);
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     public static void applyAbil(JsonArray abilities, Card card){
         if (abilities != null) {
             for (JsonElement ability : abilities) {
@@ -177,8 +260,14 @@ public class JsonAccessor {
                                     )
                                     .getConstructor(JsonObject.class, Card.class)
                                     .newInstance(ability.getAsJsonObject().get("args").getAsJsonObject(), card);
-                            if(ability.getAsJsonObject().get("scen") != null) {
-                                abil.setRunListener(UtilMaps.getInstance().getAbilRunScen(ability.getAsJsonObject().get("scen").getAsString().toLowerCase()));
+                            if(ability.getAsJsonObject().get("event") != null) {
+                                abil.setCardEvent(UtilMaps.getInstance().getCardEvent(ability.getAsJsonObject().get("event").getAsString().toLowerCase()));
+                            }
+                            if(ability.getAsJsonObject().get("target") != null){
+                                abil.setCardType(UtilMaps.getInstance().getCardTypeByStr(ability.getAsJsonObject().get("target").getAsString().toLowerCase()));
+                            }
+                            if(ability.getAsJsonObject().get("type") != null){
+                                abil.setCardType(UtilMaps.getInstance().getCardTypeByStr(ability.getAsJsonObject().get("type").getAsString().toLowerCase()));
                             }
                             card.addAbility(abil);
                         }
@@ -201,8 +290,8 @@ public class JsonAccessor {
                 String name = ((JsonObject) jsonElement).get("deck").getAsString();
                 if (name.startsWith("%")) {
                     name = name.substring(1);
-                    if (UtilMaps.getInstance().getDeckByName("name") != null) {
-                        decks.add(UtilMaps.getInstance().getDeckByName("name"));
+                    if (UtilMaps.getInstance().getDeckByName(name) != null) {
+                        decks.add(UtilMaps.getInstance().getDeckByName(name));
                     } else {
                         try {
                             decks.add(pickRandomDeck());

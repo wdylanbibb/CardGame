@@ -3,6 +3,7 @@ package cardgame.cardcontainers;
 import cardgame.cards.Card;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Discard extends ArrayList<Card> implements CardContainer {
@@ -17,6 +18,13 @@ public class Discard extends ArrayList<Card> implements CardContainer {
     public boolean add(Card card) {
         boolean ret = super.add(card);
         card.destroy();
+        return ret;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Card> c) {
+        boolean ret = super.addAll(c);
+        c.forEach(Card::destroy);
         return ret;
     }
 }

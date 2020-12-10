@@ -1,5 +1,7 @@
 package cardgame.abilities;
 
+import cardgame.cards.Card;
+
 public interface Runnable {
-    void run();
+    void run(Card target);
 }

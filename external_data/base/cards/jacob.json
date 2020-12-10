@@ -1,6 +1,13 @@
 {
-  "type": "mongrel",
+  "type": "monster",
   "name": "Jacob",
   "cost": 0,
-  "description": "he is jacob"
+  "description": "he is jacob",
+  "abilities":
+  [
+    {
+      "abil": "gainhealth",
+      "args": {"num": 2}
+    }
+  ]
 }

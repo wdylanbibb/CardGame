@@ -24,12 +24,17 @@ public class Scry extends Ability {
     }
 
     @Override
-    public void run() {
+    public void run(Card target) {
         Player player = card.getPlayer();
         Deck deck = (Deck) GameComponents.getInstance().getPlayerContainer(player, Deck.class);
         System.out.println("Top " + Math.min(deck.size(), num) + " card(s) of the deck:");
         for (Card c : deck.look(Math.min(deck.size(), num))) {
             System.out.println("   " + c.getName());
         }
+    }
+
+    @Override
+    public String getName(){
+        return "scry";
     }
 }

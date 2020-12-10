@@ -1,5 +1,6 @@
 package cardgame.rules;
 
+import cardgame.EnumManager;
 import cardgame.cards.Card;
 import cardgame.cards.cardtypes.Monster.Monster;
 import cardgame.GameComponents;
@@ -7,15 +8,7 @@ import cardgame.Player;
 
 public class RuleUtils {
 
-    public enum CompareAttr {
-        LESS_THAN, GREATER_THAN, EQUAL_TO, NOT_EQUAL, LESS_OR_EQUAL, GREATER_OR_EQUAL, NONE
-    }
-
-    public enum PlayerEffect {
-        SELF, NOT_SELF, ALL, NONE
-    }
-
-    static Integer getCompareVal(String attr, Card card, Player player, PlayerEffect playersToAffect) {
+    static Integer getCompareVal(String attr, Card card, Player player, EnumManager.PlayerEffect playersToAffect) {
         Integer valToCompare = null;
         switch (attr) {
             case "atk":
@@ -62,7 +55,7 @@ public class RuleUtils {
         return valToCompare;
     }
 
-    static boolean compare(Integer valToCompare, CompareAttr compareAttr, int val) {
+    static boolean compare(Integer valToCompare, EnumManager.CompareAttr compareAttr, int val) {
         switch (compareAttr) {
             case LESS_THAN:
                 return valToCompare < val;

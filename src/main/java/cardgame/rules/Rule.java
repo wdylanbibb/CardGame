@@ -1,5 +1,6 @@
 package cardgame.rules;
 
+import cardgame.EnumManager;
 import cardgame.cards.Card;
 import cardgame.Player;
 import cardgame.UtilMaps;
@@ -7,14 +8,14 @@ import cardgame.UtilMaps;
 public class Rule {
 
     private String attr;
-    private RuleUtils.CompareAttr compareAttr;
+    private EnumManager.CompareAttr compareAttr;
     private String compare;
     private int val;
     private Player player;
-    private RuleUtils.PlayerEffect playersToAffect;
+    private EnumManager.PlayerEffect playersToAffect;
     private String players;
 
-    public Rule(String attr, RuleUtils.CompareAttr compareAttr, int val, Player player, RuleUtils.PlayerEffect playersToAffect) {
+    public Rule(String attr, EnumManager.CompareAttr compareAttr, int val, Player player, EnumManager.PlayerEffect playersToAffect) {
         this.attr = attr;
         this.compareAttr = compareAttr;
         this.val = val;
@@ -28,19 +29,19 @@ public class Rule {
         return RuleUtils.compare(valToCompare, compareAttr, val);
     }
 
-    public RuleUtils.CompareAttr getCompareAttr() {
+    public EnumManager.CompareAttr getCompareAttr() {
         return compareAttr;
     }
 
-    public RuleUtils.PlayerEffect getPlayersToAffect() {
+    public EnumManager.PlayerEffect getPlayersToAffect() {
         return playersToAffect;
     }
 
-    public void setCompareAttr(RuleUtils.CompareAttr compareAttr) {
+    public void setCompareAttr(EnumManager.CompareAttr compareAttr) {
         this.compareAttr = compareAttr;
     }
 
-    public void setPlayersToAffect(RuleUtils.PlayerEffect playersToAffect) {
+    public void setPlayersToAffect(EnumManager.PlayerEffect playersToAffect) {
         this.playersToAffect = playersToAffect;
     }
 

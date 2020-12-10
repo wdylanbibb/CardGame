@@ -32,6 +32,12 @@ class Parser {
         return parseCard(collection, word);
     }
 
+    static Card parseCardFromAnyField(List<String> words){
+        List<Card> collection = new ArrayList<>(GameComponents.getInstance().getAllFieldCards());
+        String word = StringUtils.join(words, " ");
+        return parseCard(collection, word);
+    }
+
     static Card parseCardFromFieldOrHand(Player player, List<String> words) {
         List<Card> collection = new ArrayList<>(player.getHand());
         collection.addAll(GameComponents.getInstance().getAllFieldCards());
@@ -39,7 +45,12 @@ class Parser {
         return parseCard(collection, word);
     }
 
-    private static Card parseCard(List<Card> collection, String words) {
+    static Card parseCardFromList(List<Card> collection, List<String> words){
+        String word = StringUtils.join(words, " ");
+        return parseCard(collection, word);
+    }
+
+    static Card parseCard(List<Card> collection, String words) {
         return collection
                 .stream()
                 .filter(card -> card.getName().equalsIgnoreCase(words))

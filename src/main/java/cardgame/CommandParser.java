@@ -1,12 +1,12 @@
 package cardgame;
 
-import cardgame.abilities.AbilityRunListener;
-import cardgame.abilities.Ability;
-import cardgame.cardcontainers.Field;
 import cardgame.cards.Card;
 import cardgame.cards.cardtypes.Monster.Monster;
+import cardgame.emissions.Signal;
+import cardgame.emissions.SignalManager;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class CommandParser {
@@ -20,6 +20,12 @@ class CommandParser {
     private final Game game;
     private int playerNum;
     private final Player[] players;
+
+    private final Signal onCardPlayed = SignalManager.createSignal("onplay", ArrayList.class);
+    private final Signal abilUsed = SignalManager.createSignal("use", ArrayList.class, String.class);
+    private final Signal onAttack = SignalManager.createSignal("onattack", ArrayList.class);
+    private final Signal onAttacked = SignalManager.createSignal("onattacked", ArrayList.class);
+
 
     CommandParser(List<String> words, Player player, Game game, int playerNum, Player[] players) {
         this.words = words;
@@ -43,9 +49,11 @@ class CommandParser {
                 return info();
             case "attack":
                 return attack();
-            default:
-                return abil();
         }
+        if(UtilMaps.getInstance().getAbilityByString(words.get(0).toLowerCase()) != null){
+            return abil();
+        }
+        return CONTINUE;
     }
 
     private int play() {
@@ -55,7 +63,7 @@ class CommandParser {
                 Card cardPlayed = Parser.parseCardFromHand(player, words.subList(1, words.size() - 1));
                 if (GameComponents.getInstance().canPlay(cardPlayed)) {
                     game.playCard(player, cardPlayed, num);
-                    cardPlayed.getAbilitiesFromListener(AbilityRunListener.PLAY).forEach(Ability::run);
+                    onCardPlayed.emit(new ArrayList<>(List.of(cardPlayed)));
                 } else {
                     System.out.println("Card cannot be played right now because of a rule set by another card.");
                 }
@@ -70,6 +78,7 @@ class CommandParser {
                 System.out.println("Card not found");
             }
         }
+
         return CONTINUE;
     }
 
@@ -111,10 +120,11 @@ class CommandParser {
                             Monster target = players[playerNum >= players.length ? 0 : playerNum].getField().getMonsters()[5-Integer.parseInt(words.get(2))];
                             if(monster != null && target != null){
                                 boolean killed = monster.attack(target);
+                                onAttack.emit(new ArrayList<>(List.of(monster)));
+                                onAttacked.emit(new ArrayList<>(List.of(target)));
                                 System.out.println(monster.getName() + " attacked " + target.getName() + " for " + monster.getAtk() + " damage!");
                                 if(killed) {
                                     System.out.println(target.getName() + " has died!");
-                                    target.getAbilitiesFromListener(AbilityRunListener.DEATH).forEach(Ability::run);
                                 }
                                 players[playerNum >= players.length ? 0 : playerNum].checkForDead();
                                 game.printBoard(player, players[playerNum >= players.length ? 0 : playerNum]);
@@ -136,14 +146,17 @@ class CommandParser {
         return CONTINUE;
     }
 
-    private int abil() {
-        Class<? extends Ability> cls = UtilMaps.getInstance().getAbilityByString(words.get(0));
-        if (cls != null) {
-            try {
+    private int abil(){
+        if(words.size() < 2){
+            System.out.println("Incorrect syntax. Command: <ability> <card>");
+            return CONTINUE;
+        }else{
+            try{
                 Card card = Parser.parseCardFromField(player, words.subList(1, words.size()));
-                if (!((Field) GameComponents.getInstance().getPlayerContainer(player, Field.class)).use(card, null, cls)) System.out.println("This card does not have a " + Character.toUpperCase(cls.getSimpleName().charAt(0)) + cls.getSimpleName().substring(1).toLowerCase() + " ability.");
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Card not found on field");
+                abilUsed.emit(new ArrayList<>(List.of(card)), words.get(0));
+            }catch(IndexOutOfBoundsException e){
+                System.out.println("Incorrect syntax. Command: <ability> <card>");
+                return CONTINUE;
             }
         }
         return CONTINUE;

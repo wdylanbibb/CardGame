@@ -1,10 +1,10 @@
 package cardgame;
 
 
-import cardgame.abilities.AbilityRunListener;
-import cardgame.abilities.Ability;
 import cardgame.cardcontainers.Field;
 import cardgame.cards.Card;
+import cardgame.emissions.Signal;
+import cardgame.emissions.SignalManager;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -17,6 +17,10 @@ public class Game {
     Field[] board;
     Scanner scanner;
 
+    Signal turnStart = SignalManager.createSignal("turnstart", ArrayList.class);
+    Signal turnEnd = SignalManager.createSignal("turnend", ArrayList.class);
+    Signal targetChosen = SignalManager.createSignal("targetchosen", Integer.class, Card.class); //Emits once a target is chose, takes a request code
+
     public Game(Scanner scanner) throws IOException {
         JsonAccessor.fillMaps();
         this.scanner = scanner;
@@ -28,20 +32,46 @@ public class Game {
         }
         GameComponents.newInstance(players);
         board = new Field[]{players[0].getField(), players[1].getField()};
+
+        SignalManager.connect("choosetarget", (signal, args) -> {
+            int requestCode = (int) args[0];
+            Card target = chooseTarget((Card) args[1], (EnumManager.PlayerEffect) args[2], (EnumManager.CardType) args[3]);
+            targetChosen.emit(requestCode, target);
+        }, null, true);
+    }
+
+    public static void registerSignals(){
+        SignalManager.createSignal("turnstart", ArrayList.class);
+        SignalManager.createSignal("turnend", ArrayList.class);
+        SignalManager.createSignal("use", ArrayList.class, String.class);
+        SignalManager.createSignal("onplay", ArrayList.class);
+        SignalManager.createSignal("ondestroy", ArrayList.class);
+        SignalManager.createSignal("ondeath", ArrayList.class);
+        SignalManager.createSignal("choosetarget", Integer.class, Card.class, EnumManager.PlayerEffect.class, EnumManager.CardType.class);
+        SignalManager.createSignal("targetchosen", Integer.class, Card.class);
+        SignalManager.createSignal("onattack", ArrayList.class);
+        SignalManager.createSignal("onattacked", ArrayList.class);
+        SignalManager.createSignal("abilityused", ArrayList.class, String.class);
+        SignalManager.createSignal("attributeused", ArrayList.class, String.class);
+        SignalManager.createSignal("newrule", ArrayList.class);
+        SignalManager.createSignal("endrule", ArrayList.class);
     }
 
     public static void main(String[] args) throws IOException {
+        registerSignals();
+
         Game game = new Game(new Scanner(System.in));
+
         game.run();
     }
 
     public void run() {
-
+        int turns = 0;
         int currPlayer = 0;
         ArrayList<String> words;
         boolean endGame = false;
         do{
-
+            turns++;
             boolean endTurn = false;
             boolean beginningTurn = true;
             Player player = players[currPlayer];
@@ -57,12 +87,7 @@ public class Game {
                     System.out.println("You drew:\n    " + StringUtils.join(cardsDrew.stream().map(Card::getName).collect(Collectors.toList()), ", "));
                     System.out.print("Your hand:\n");
                     printHand(player);
-                    GameComponents
-                            .getInstance()
-                            .getSelfFieldCards(player)
-                            .forEach(card -> card
-                                    .getAbilitiesFromListener(AbilityRunListener.TURNSTART)
-                                    .forEach(Ability::run));
+                    turnStart.emit(GameComponents.getInstance().getSelfFieldCards(player));
                 }
 
 
@@ -81,26 +106,12 @@ public class Game {
                             endTurn = true;
                             endGame = true;
                             break;
-                        default:
-                            Class<? extends Ability> cls = UtilMaps.getInstance().getAbilityByString(words.get(0));
-                            if (cls != null) {
-                                try {
-                                    Card card = Parser.parseCardFromField(player, words.subList(1, words.size()));
-                                    if (!((Field) GameComponents.getInstance().getPlayerContainer(player, Field.class)).use(card, null, cls)) System.out.println("This card does not have a " + Character.toUpperCase(cls.getSimpleName().charAt(0)) + cls.getSimpleName().substring(1).toLowerCase() + " ability.");
-                                } catch (IndexOutOfBoundsException e) {
-                                    System.out.println("Card not found on field");
-                                }
-                            }
                     }
                 }
             }
+            GameComponents.getInstance().getAllFieldCards().forEach(card -> card.setDestroyAfter(card.getDestroyAfter() > 0 ? card.getDestroyAfter()-1 : card.getDestroyAfter()));
             player.endTurn();
-            GameComponents
-                        .getInstance()
-                        .getSelfFieldCards(player)
-                        .forEach(card -> card
-                                .getAbilitiesFromListener(AbilityRunListener.TURNEND)
-                                .forEach(Ability::run));
+            turnEnd.emit(GameComponents.getInstance().getSelfFieldCards(player));
             currPlayer = currPlayer + 1 >= players.length ? 0 : currPlayer + 1;
         }while(!endGame);
 
@@ -158,14 +169,14 @@ public class Game {
         //Print current Front field
         ArrayList<ArrayList<String>> currFrontImages = new ArrayList<>();
         for(int i = 0; i < currFrontList.size(); i++){
-            currFrontImages.add(getCardImage(currFrontList.get(i), Integer.toString(i)));
+            currFrontImages.add(getCardImage(currFrontList.get(4-i), Integer.toString(i)));
         }
         printField(currFrontImages);
 
         //Print current back field
         ArrayList<ArrayList<String>> currBackImages = new ArrayList<>();
         for(int i = 0; i < currBackList.size(); i++){
-            currBackImages.add(getCardImage(currBackList.get(i), Integer.toString(i)));
+            currBackImages.add(getCardImage(currBackList.get(4-i), Integer.toString(i)));
         }
         printField(currBackImages);
 
@@ -202,5 +213,41 @@ public class Game {
 
     public void printCardDesc(Card card) {
         System.out.println(card.getName() + ":\n  " + card.getDescription());
+    }
+
+    public Card chooseTarget(Card card, EnumManager.PlayerEffect effect, EnumManager.CardType cardType){
+        System.out.println("Choose a target of type " + UtilMaps.getInstance().getCardClass(cardType).getSimpleName());
+        Card returnCard = null;
+        do {
+            try{
+                switch (effect) {
+                    case SELF -> {
+                        returnCard = Parser.parseCardFromField(card.getPlayer(), Parser.parser());
+                        break;
+                    }
+                    case NOT_SELF -> {
+                        ArrayList<Card> cardsToParse = new ArrayList<>();
+                        GameComponents.getInstance().getAllPlayers().stream().filter(player -> player != card.getPlayer()).forEach(player -> cardsToParse.addAll(GameComponents.getInstance().getSelfFieldCards(player)));
+                        returnCard = Parser.parseCardFromList(cardsToParse, Parser.parser());
+                        break;
+                    }
+                    case ALL -> {
+                        returnCard = Parser.parseCardFromAnyField(Parser.parser());
+                        break;
+                    }
+                    case NONE -> {
+                        return null;
+                    }
+                }
+                Class<? extends Card> cls = UtilMaps.getInstance().getCardClass(cardType);
+                if(!cls.isAssignableFrom(card.getClass())){
+                    returnCard = null;
+                    System.out.println("Wrong card type. Choose a target of type " + UtilMaps.getInstance().getCardClass(cardType).getSimpleName());
+                }
+            }catch(IndexOutOfBoundsException exc){
+                returnCard = null;
+            }
+        }while(returnCard==null);
+        return returnCard;
     }
 }

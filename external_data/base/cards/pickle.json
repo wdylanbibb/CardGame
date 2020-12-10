@@ -1,6 +1,13 @@
 {
-  "type": "gamer",
+  "type": "monster",
   "name": "Pickle",
   "cost": 3,
-  "description": "gamer"
+  "description": "gamer",
+  "abilities":
+  [
+    {
+      "abil": "scry",
+      "args": {"num": 3}
+    }
+  ]
 }

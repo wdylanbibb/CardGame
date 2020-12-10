@@ -2,13 +2,20 @@ package cardgame.cards.cardtypes.Monster;
 
 import cardgame.cards.Attackable;
 import cardgame.cards.Card;
+import cardgame.emissions.Signal;
+import cardgame.emissions.SignalManager;
 import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Monster extends Card implements Attackable {
 
     private int atk;
     private int def;
     private boolean alive = true;
+    private final Signal cardDeath = SignalManager.createSignal("ondeath", ArrayList.class);
+    private final Signal onDestroy = SignalManager.createSignal("ondestroy", ArrayList.class);
 
     public Monster(String name, int cost, int atk, int def, String description) {
         super(name, cost, description);
@@ -26,8 +33,10 @@ public class Monster extends Card implements Attackable {
         return false;
     }
 
-    private void die() {
+    public void die() {
         alive = false;
+        cardDeath.emit(new ArrayList<>(List.of(this)));
+        onDestroy.emit(new ArrayList<>(List.of(this)));
     }
 
     public boolean isDead() {

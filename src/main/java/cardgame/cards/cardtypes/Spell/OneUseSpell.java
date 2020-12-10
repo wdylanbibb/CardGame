@@ -1,6 +1,6 @@
 package cardgame.cards.cardtypes.Spell;
 
-import cardgame.abilities.AbilityRunListener;
+import cardgame.EnumManager;
 import cardgame.abilities.Ability;
 
 import javax.annotation.Nonnull;
@@ -13,7 +13,8 @@ public class OneUseSpell extends Spell {
     @Override
     public boolean addAbility(Ability ability) {
         boolean ret = super.addAbility(ability);
-        ability.setRunListener(AbilityRunListener.PLAY);
+        ability.setCardEvent(EnumManager.CardEvent.PLAY);
+        setDestroyAfter(1);
         return ret;
     }
 }

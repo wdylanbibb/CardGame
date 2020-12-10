@@ -1,9 +1,14 @@
 package base.abilities;
 
+import java.util.*;
 import cardgame.*;
 import cardgame.abilities.*;
+import cardgame.attributes.*;
 import cardgame.cardcontainers.*;
 import cardgame.cards.*;
+import cardgame.cards.cardtypes.Spell.*;
+import cardgame.cards.cardtypes.Monster.*;
+import cardgame.rules.*;
 import com.google.gson.*;
 
 public class GainHealth extends Ability {
@@ -12,7 +17,7 @@ public class GainHealth extends Ability {
 
     public GainHealth(JsonObject args, Card card) {
         super(args, card);
-        if(args==null){
+        if (args == null) {
             card.removeAbility(this);
             return;
         }
@@ -21,10 +26,17 @@ public class GainHealth extends Ability {
         } catch (Exception exc) {
             card.removeAbility(this);
         }
+        setTargetType(EnumManager.PlayerEffect.ALL);
     }
 
     @Override
-    public void run() {
+    public void run(Card target) {
         Player player = card.getPlayer();
+        System.out.println("Target description: " + target.getDescription());
+    }
+
+    @Override
+    public String getName(){
+        return "gainhealth";
     }
 }
