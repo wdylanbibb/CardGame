@@ -57,7 +57,7 @@ public class Signal {
             cardPredicate = list -> true;
         }
         listeners.put(listener, Pair.of(false, cardPredicate));
-        Logger.getLogger("emission").info("Connected " + name);
+//        Logger.getLogger("emission").info("Connected " + name);
     }
 
     public void connect(EmissionListener listener, @Nullable Predicate<List<Object>> cardPredicate, boolean oneShot){
@@ -65,12 +65,12 @@ public class Signal {
             cardPredicate = list -> true;
         }
         listeners.put(listener, Pair.of(oneShot, cardPredicate));
-        Logger.getLogger("emission").info("Connected " + name);
+//        Logger.getLogger("emission").info("Connected " + name);
     }
 
     public void disconnect(EmissionListener listener){
         listeners.remove(listener);
-        Logger.getLogger("emission").info("Disconnected " + name);
+//        Logger.getLogger("emission").info("Disconnected " + name);
     }
 
 }

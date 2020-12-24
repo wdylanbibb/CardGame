@@ -150,5 +150,12 @@ public class UtilMaps {
     public Class<? extends Card> getCardClass(EnumManager.CardType type){
         return cardTypes.values().stream().filter(cardTypeClassPair -> cardTypeClassPair.getLeft().equals(type)).collect(Collectors.toList()).get(0).getRight();
     }
+
+    public String getCardClassName(Class cls){
+        if (cardTypes.entrySet().stream().anyMatch(stringPairEntry -> stringPairEntry.getValue().getRight().equals(cls))) {
+            return cardTypes.entrySet().stream().filter(stringPairEntry -> stringPairEntry.getValue().getRight().equals(cls)).collect(Collectors.toList()).get(0).getKey();
+        }
+        return "default";
+    }
 }
 

@@ -57,4 +57,12 @@ public class Rule {
         compareAttr = UtilMaps.getInstance().getComparisonByString(compare);
         playersToAffect = UtilMaps.getInstance().getPlayerByString(players);
     }
+
+    public int getVal() {
+        return val;
+    }
+
+    public String getAttr() {
+        return attr;
+    }
 }
