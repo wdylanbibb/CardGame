@@ -32,6 +32,8 @@ public class JsonAccessor {
 
     private static final String DATA_DIR = "external_data";
     private static Gson gson;
+    private static String cardBack;
+    private static String cardFront;
 
     private static NodeList<ImportDeclaration> imports;
 
@@ -142,6 +144,11 @@ public class JsonAccessor {
                 }
             });
         }
+
+        Reader reader = Files.newBufferedReader(Paths.get(DATA_DIR + "/setup.json"));
+        JsonObject object = gson.fromJson(reader, JsonObject.class);
+        cardBack = object.get("cardback").getAsString();
+        cardFront = object.get("cardfront") != null ? object.get("cardfront").getAsString() : null;
         UtilMaps.getInstance().fillAbilList(abilList);
         UtilMaps.getInstance().fillAttrList(attrList);
         UtilMaps.getInstance().fillDeckList(decks);
@@ -315,5 +322,13 @@ public class JsonAccessor {
         Random random = new Random();
         List<String> possibleNames = UtilMaps.getInstance().getDeckPaths();
         return Iterables.get(possibleNames, random.nextInt(possibleNames.size()));
+    }
+
+    public static String getCardBack() {
+        return cardBack;
+    }
+
+    public static String getCardFront() {
+        return cardFront;
     }
 }

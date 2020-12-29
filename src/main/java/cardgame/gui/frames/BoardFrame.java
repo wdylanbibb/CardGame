@@ -1,25 +1,19 @@
 package cardgame.gui.frames;
 
 import cardgame.Player;
-import cardgame.cardcontainers.Deck;
-import cardgame.cardcontainers.Discard;
-import cardgame.cardcontainers.Field;
 import cardgame.gui.GuiManager;
 import cardgame.gui.panels.PlayerPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 public class BoardFrame extends JFrame {
 
-    private final Discard p1Discard;
-    private final Discard p2Discard;
     private final Player p1;
     private final Player p2;
-    private final Field p1Field;
-    private final Field p2Field;
-    private final Deck p1Deck;
-    private final Deck p2Deck;
     private PlayerPanel p1Panel;
     private PlayerPanel p2Panel;
 
@@ -30,32 +24,37 @@ public class BoardFrame extends JFrame {
 
         this.p1 = p1;
         this.p2 = p2;
-        this.p1Deck = p1.getDeck();
-        this.p2Deck = p2.getDeck();
-        this.p1Discard = p1.getDiscard();
-        this.p2Discard = p2.getDiscard();
-        this.p1Field = p1.getField();
-        this.p2Field = p2.getField();
 
+        setResizable(false);
+
+        GuiManager.getInstance().initWindowTheme(this);
         JPanel contentPanel = new JPanel(new BorderLayout());
 
         JPanel playerPanel = new JPanel(new BorderLayout());
 
         JButton endBtn = new JButton("END TURN");
         endBtn.setFocusable(false);
-        endBtn.addActionListener(System.out::println);
+        endBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    System.out.println("end");
+                }
+            }
+        });
         endBtn.setPreferredSize(new Dimension(100, 25));
 
 
-        p1Panel = new PlayerPanel(p1, this, true);
-        p1Panel.setBackground(Color.CYAN);
-        p2Panel = new PlayerPanel(p2, this, false);
-        p2Panel.setBackground(Color.BLUE);
+        p1Panel = new PlayerPanel(p1, true);
+        p1Panel.setBackground(Color.magenta);
+        p2Panel = new PlayerPanel(p2, false);
+        p2Panel.setBackground(Color.green);
 
         playerPanel.add(p1Panel, BorderLayout.SOUTH);
         playerPanel.add(p2Panel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.setBackground(Color.blue);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 30, 15));
         buttonPanel.add(endBtn, BorderLayout.SOUTH);
 
@@ -65,7 +64,6 @@ public class BoardFrame extends JFrame {
         contentPanel.setBounds(0, 0, contentPanel.getPreferredSize().width, contentPanel.getPreferredSize().height);
         setPreferredSize(new Dimension(contentPanel.getPreferredSize().width + 15, contentPanel.getPreferredSize().height + 40));
         add(contentPanel);
-        add(new JLabel());
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);

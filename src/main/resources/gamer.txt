@@ -1,0 +1,6 @@
+END: button
+DRAW: click deck
+USE: left click
+INFO: right click (hand, field, eneny)
+PLAY: left click from hand, left click on empty spot on field
+ATTACK: drag from attacker to target

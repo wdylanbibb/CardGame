@@ -27,4 +27,18 @@ public class Discard extends ArrayList<Card> implements CardContainer {
         c.forEach(Card::destroy);
         return ret;
     }
+
+    public List<Card> look(int num) {
+        List<Card> ret = new ArrayList<>();
+        if (size() >= num) {
+            for (int i = 0; i < num; i++) {
+                ret.add(get(size() - i - 1));
+            }
+        } else if (size() > 0) {
+            ret.addAll(this);
+        } else {
+            ret.add(null);
+        }
+        return ret;
+    }
 }
