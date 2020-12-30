@@ -3,22 +3,16 @@ package cardgame.gui;
 import cardgame.JsonAccessor;
 import cardgame.Player;
 import cardgame.UtilMaps;
-import cardgame.cardcontainers.Hand;
 import cardgame.cards.Card;
 import cardgame.gui.frames.BoardFrame;
 import cardgame.gui.frames.HandFrame;
 import cardgame.gui.frames.InfoFrame;
 
 import javax.swing.*;
-import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.*;
 
 public class GuiManager {
 
