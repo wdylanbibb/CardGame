@@ -41,12 +41,13 @@ public class CardPanel extends JPanel {
     public CardPanel(Card card, int numCards, boolean large, int x, int y) {
         preferredSize = large ? CARD_DIMS_LARGE : CARD_DIMS;
         this.cardNum = numCards;
-        img_dims = new Dimension((int) (preferredSize.width * (float) (.845)), preferredSize.height / 3);
+        setLayout(null);
+        img_dims = new Dimension((int) ((preferredSize.width - 8) * (float) (.845)), preferredSize.height / 3);
         setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.BLACK));
 //        setPreferredSize(preferredSize);
 
         pane = new JLayeredPane();
-        pane.setBounds(-2, -2, preferredSize.width, preferredSize.height);
+        pane.setBounds(2, 2, preferredSize.width - 4, preferredSize.height - 4);
         pane.setPreferredSize(preferredSize);
         add(pane);
 
@@ -58,8 +59,10 @@ public class CardPanel extends JPanel {
         if (numCards > 1) {
             drawNum(numCards);
         }
-        GuiManager.getInstance().labelFix(this);
         setBounds(x, y, preferredSize.width, preferredSize.height);
+        GuiManager.getInstance().labelFix(this);
+        revalidate();
+        repaint();
     }
 
     public void setCard (Card card) {
@@ -134,19 +137,21 @@ public class CardPanel extends JPanel {
         //add info to card
         JLabel nameLabel = new JLabel(name);
         nameLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
-        nameLabel.setBounds(0, 10, preferredSize.width, 30);
+        nameLabel.setBounds(2, 12, preferredSize.width, 30);
         nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         pane.add(nameLabel, Integer.valueOf(1));
 
         JLabel imgLabel = new JLabel(new ImageIcon(img.getScaledInstance(img_dims.width, img_dims.height, 0)));
         imgLabel.setPreferredSize(img_dims);
-        imgLabel.setBounds((int) (preferredSize.width * 0.0775), 50, img_dims.width, img_dims.height);
+        imgLabel.setBounds((int) (preferredSize.width * 0.0775) + 2, 52, img_dims.width, img_dims.height);
         pane.add(imgLabel, Integer.valueOf(1));
 
 
         JLabel descLabel = new JLabel(description);
-        descLabel.setBounds(0, preferredSize.height / 2, preferredSize.width, preferredSize.height / 2);
+        descLabel.setBounds(2, preferredSize.height / 2 + 2, preferredSize.width, preferredSize.height / 2);
         pane.add(descLabel, Integer.valueOf(1));
+
+        System.out.println(pane.getBounds());
 
     }
 

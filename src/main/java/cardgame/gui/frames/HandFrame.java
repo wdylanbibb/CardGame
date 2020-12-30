@@ -77,23 +77,19 @@ public class HandFrame extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        content.add(left);
 
         redrawHand();
 
-        content.add(right);
-
-
+        GuiManager.getInstance().labelFix(content);
         GuiManager.getInstance().initWindowTheme(this);
         pack();
         setVisible(true);
+        repaint();
     }
 
     public void redrawHand() {
-        Arrays.stream(visCards).forEach(c -> {
-            if (Arrays.stream(content.getComponents()).anyMatch(comp -> comp == c))
-                content.remove(c);
-        });
+        content.removeAll();
+        revalidate();
         repaint();
         left.setEnabled(startIndex >= 1);
         right.setEnabled(startIndex + CARDS_SHOWN < player.getHand().size());
@@ -134,8 +130,15 @@ public class HandFrame extends JFrame {
         } else {
             subList = player.getHand();
         }
-        int[] x = {0};
-        int y = 10;
+        int cardSpaceWidth = subList.size() * CardPanel.CARD_DIMS.width + ((subList.size() + 1) * 25);
+        int[] x = {(preferredSize.width - cardSpaceWidth) / 2 + 25};
+        int y = (preferredSize.height - CardPanel.CARD_DIMS.height) / 2;
+        if (player.getHand().size() > subList.size()) {
+            left.setBounds((preferredSize.width - cardSpaceWidth) / 2 - 35, preferredSize.height / 2 - (50 / 2), 35, 50);
+            content.add(left);
+            right.setBounds((preferredSize.width - cardSpaceWidth) / 2 + cardSpaceWidth, preferredSize.height / 2 - 25, 35, 50);
+            content.add(right);
+        }
         for (int i = 0, subListSize = subList.size(); i < subListSize; i++) {
             Card card = subList.get(i);
             CardPanel panel = new CardPanel(card, card == null ? 0 : 1, false, x[0], y);
@@ -155,6 +158,7 @@ public class HandFrame extends JFrame {
                     }
                 });
             }
+            x[0] += CardPanel.CARD_DIMS.width + 25;
         }
     }
 }
