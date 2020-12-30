@@ -6,9 +6,11 @@ import cardgame.cardcontainers.Field;
 import cardgame.cardcontainers.Hand;
 import cardgame.cards.Card;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Player {
 
@@ -20,6 +22,7 @@ public class Player {
     private int init_draw = 1;
     private int mana;
     private int health;
+    private Color color;
 
     private final Deck deck;
     private final Hand hand;
@@ -37,6 +40,8 @@ public class Player {
         max_health = BASE_MAX_HEALTH;
         health = max_health;
         multiNoManaDraw(STARTING_HAND);
+        Color[] colors = new Color[]{Color.WHITE, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.RED};
+        color = colors[new Random().nextInt(5)];
     }
 
     public List<Card> multiNoManaDraw(int num) {
@@ -155,5 +160,9 @@ public class Player {
 
     public void resetHealth(){
         health = max_health;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

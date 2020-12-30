@@ -7,6 +7,7 @@ import cardgame.cards.Card;
 import cardgame.gui.frames.BoardFrame;
 import cardgame.gui.frames.HandFrame;
 import cardgame.gui.frames.InfoFrame;
+import cardgame.gui.panels.CardPanel;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.DefaultMetalTheme;
@@ -20,10 +21,15 @@ public class GuiManager {
     private InfoFrame infoFrame;
     private BoardFrame boardFrame;
     private HandFrame handFrame;
+    private Rectangle infoFrameLoc;
 
     public static final DefaultMetalTheme WINDOW_THEME = new DefaultMetalTheme(){
 
     };
+
+    GuiManager() {
+        infoFrameLoc = new Rectangle(0, 0, CardPanel.CARD_DIMS_LARGE.width, CardPanel.CARD_DIMS_LARGE.height);
+    }
 
     private static GuiManager INSTANCE;
 
@@ -46,9 +52,13 @@ public class GuiManager {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        boardFrame = new BoardFrame(p1, p2);
         p1.draw();
+        boardFrame = new BoardFrame(p1, p2);
         new HandFrame(p1, 1);
+    }
+
+    public void takeTurn() {
+        boardFrame.takeTurn();
     }
 
     public void labelFix(JPanel panel) {
@@ -73,5 +83,13 @@ public class GuiManager {
                         JRootPane.INFORMATION_DIALOG
                 );
         SwingUtilities.updateComponentTreeUI(f);
+    }
+
+    public Rectangle getInfoFrameLoc() {
+        return infoFrameLoc;
+    }
+
+    public void setInfoFrameLoc(int x, int y, int w, int h) {
+        this.infoFrameLoc = new Rectangle(x, y, w, h);
     }
 }

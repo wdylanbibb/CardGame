@@ -1,20 +1,23 @@
 package cardgame.gui.frames;
 
+import cardgame.GUILog;
 import cardgame.Player;
 import cardgame.gui.GuiManager;
 import cardgame.gui.panels.PlayerPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class BoardFrame extends JFrame {
 
     private final Player p1;
     private final Player p2;
-    private PlayerPanel p1Panel;
-    private PlayerPanel p2Panel;
+    private PlayerPanel currPanel;
+    private PlayerPanel nonCurrPanel;
+    JPanel contentPanel;
+    JPanel playerPanel;
+    private Player currPlayer;
+    private Player nonCurrPlayer;
 
 
     public BoardFrame(Player p1, Player p2) throws HeadlessException {
@@ -23,34 +26,31 @@ public class BoardFrame extends JFrame {
 
         this.p1 = p1;
         this.p2 = p2;
+        currPlayer = p1;
+        nonCurrPlayer = p2;
 
         setResizable(false);
 
         GuiManager.getInstance().initWindowTheme(this);
-        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel = new JPanel(new BorderLayout());
 
-        JPanel playerPanel = new JPanel(new BorderLayout());
+        playerPanel = new JPanel(new BorderLayout());
 
         JButton endBtn = new JButton("END TURN");
         endBtn.setFocusable(false);
-        endBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    System.out.println("end");
-                }
-            }
+        endBtn.addActionListener(e -> {
+            GUILog.println("end");
+            GuiManager.getInstance().takeTurn();
         });
         endBtn.setPreferredSize(new Dimension(100, 25));
 
 
-        p1Panel = new PlayerPanel(p1, true);
-        p1Panel.setBackground(Color.magenta);
-        p2Panel = new PlayerPanel(p2, false);
-        p2Panel.setBackground(Color.green);
+        currPanel = new PlayerPanel(currPlayer, true);
+        nonCurrPanel = new PlayerPanel(nonCurrPlayer, false);
 
-        playerPanel.add(p1Panel, BorderLayout.SOUTH);
-        playerPanel.add(p2Panel, BorderLayout.NORTH);
+        playerPanel.add(currPanel, BorderLayout.SOUTH);
+        playerPanel.add(nonCurrPanel, BorderLayout.NORTH);
+        playerPanel.setBackground(Color.BLACK);
 
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.setBackground(Color.blue);
@@ -67,5 +67,13 @@ public class BoardFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         pack();
+    }
+
+    public void takeTurn() {
+        Player toCurrPlayer = nonCurrPlayer;
+        nonCurrPlayer = currPlayer;
+        currPlayer = toCurrPlayer;
+        currPanel.setP(currPlayer);
+        nonCurrPanel.setP(nonCurrPlayer);
     }
 }

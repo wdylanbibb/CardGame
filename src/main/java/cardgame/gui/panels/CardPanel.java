@@ -1,6 +1,7 @@
 package cardgame.gui.panels;
 
 import cardgame.JsonAccessor;
+import cardgame.GUILog;
 import cardgame.cards.Card;
 import cardgame.cards.cardtypes.Monster.Monster;
 import cardgame.gui.GuiManager;
@@ -34,7 +35,7 @@ public class CardPanel extends JPanel {
                 cardFront = ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(front)));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            GUILog.println(e);
         }
     }
 
@@ -70,7 +71,7 @@ public class CardPanel extends JPanel {
 
         pane.removeAll();
         if (card == null) {
-            drawCardBack();
+            removeCard();
         } else {
             drawCard(card);
         }
@@ -85,17 +86,19 @@ public class CardPanel extends JPanel {
     }
 
     public void changeCardNum(int num) {
-        if (card == null) {
-            this.cardNum = num;
-            pane.removeAll();
-            if (num > 0) {
+        this.cardNum = num;
+        pane.removeAll();
+        if (num > 0) {
+            if (card == null) {
                 drawCardBack();
-                if (num > 1) {
-                    drawNum(num);
-                }
+            } else {
+                drawCard(card);
             }
-            repaint();
+            if (num > 1) {
+                drawNum(num);
+            }
         }
+        repaint();
     }
 
     private void drawCard(Card card) {
@@ -117,13 +120,13 @@ public class CardPanel extends JPanel {
             img = ImageIO.read(new ByteArrayInputStream(Base64.decodeBase64(card.getImage())));
         } catch (IOException e) {
             try {
-                System.out.println("Image not found from Base64 String. Using default image.");
+                GUILog.println("Image not found from Base64 String. Using default image.");
                 img = ImageIO.read(new File("external_data/default.png"));
             } catch (IOException ignored){}
         }
         try {
             if (img == null) {
-                System.out.println("Image not found from Base64 String. Using default image.");
+                GUILog.println("Image not found from Base64 String. Using default image.");
                 img = ImageIO.read(new File("external_data/default.png"));
             }
         } catch (IOException ignored){}
@@ -151,7 +154,7 @@ public class CardPanel extends JPanel {
         descLabel.setBounds(2, preferredSize.height / 2 + 2, preferredSize.width, preferredSize.height / 2);
         pane.add(descLabel, Integer.valueOf(1));
 
-        System.out.println(pane.getBounds());
+        GUILog.println(pane.getBounds());
 
     }
 
@@ -169,6 +172,11 @@ public class CardPanel extends JPanel {
         num.setHorizontalAlignment(SwingConstants.CENTER);
         num.setForeground(Color.BLACK);
         pane.add(num, JLayeredPane.POPUP_LAYER);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return preferredSize;
     }
 
     public CardPanel(Card card, boolean large, int x, int y) {

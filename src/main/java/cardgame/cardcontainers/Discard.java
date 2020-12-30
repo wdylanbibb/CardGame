@@ -41,4 +41,12 @@ public class Discard extends ArrayList<Card> implements CardContainer {
         }
         return ret;
     }
+
+    public Card look() {
+        if (!isEmpty()) {
+            return get(size() - 1);
+        } else {
+            return null;
+        }
+    }
 }

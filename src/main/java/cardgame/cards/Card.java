@@ -52,6 +52,11 @@ public class Card implements Playable{
         this.name = name;
         this.cost = cost;
         this.description = description;
+        try {
+            verifyImage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

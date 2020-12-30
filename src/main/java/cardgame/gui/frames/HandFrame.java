@@ -1,5 +1,6 @@
 package cardgame.gui.frames;
 
+import cardgame.GUILog;
 import cardgame.Player;
 import cardgame.cards.Card;
 import cardgame.gui.GuiManager;
@@ -141,7 +142,7 @@ public class HandFrame extends JFrame {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if (e.getButton() == MouseEvent.BUTTON1) {
-                            System.out.println("play " + card.getName());
+                            GUILog.println("play " + card.getName());
                             player.getHand().remove(card);
                             redrawHand();
                         } else if (e.getButton() == MouseEvent.BUTTON3) {
