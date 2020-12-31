@@ -18,6 +18,7 @@ public class BoardFrame extends JFrame {
     JPanel playerPanel;
     private Player currPlayer;
     private Player nonCurrPlayer;
+    private int currPlayerNum;
 
 
     public BoardFrame(Player p1, Player p2) throws HeadlessException {
@@ -28,6 +29,7 @@ public class BoardFrame extends JFrame {
         this.p2 = p2;
         currPlayer = p1;
         nonCurrPlayer = p2;
+        currPlayerNum = 1;
 
         setResizable(false);
 
@@ -39,6 +41,7 @@ public class BoardFrame extends JFrame {
         JButton endBtn = new JButton("END TURN");
         endBtn.setFocusable(false);
         endBtn.addActionListener(e -> {
+            // listener to change
             GUILog.println("end");
             GuiManager.getInstance().takeTurn();
         });
@@ -73,7 +76,16 @@ public class BoardFrame extends JFrame {
         Player toCurrPlayer = nonCurrPlayer;
         nonCurrPlayer = currPlayer;
         currPlayer = toCurrPlayer;
+        currPlayerNum = currPlayer == p1 ? 1 : 2;
         currPanel.setP(currPlayer);
         nonCurrPanel.setP(nonCurrPlayer);
+    }
+
+    public Player getCurrPlayer() {
+        return currPlayer;
+    }
+
+    public int getCurrPlayerNum() {
+        return currPlayerNum;
     }
 }

@@ -10,18 +10,21 @@ import org.apache.commons.codec.binary.Base64;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class HandFrame extends JFrame {
 
     private final Player player;
     public static final int CARDS_SHOWN = Player.STARTING_HAND;
-    Dimension preferredSize = new Dimension((CardPanel.CARD_DIMS.width + 75) * CARDS_SHOWN, CardPanel.CARD_DIMS.height + 60);
+    public static Dimension preferredSize = new Dimension((CardPanel.CARD_DIMS.width + 75) * CARDS_SHOWN, CardPanel.CARD_DIMS.height + 60);
     int startIndex;
     JPanel content;
     JButton left;
@@ -30,6 +33,7 @@ public class HandFrame extends JFrame {
 
     public HandFrame(Player player, int playerNum) throws HeadlessException {
         super(String.format("Player %d's hand", playerNum));
+        setBounds(GuiManager.getInstance().getHandFrameLoc());
         this.player = player;
         startIndex = 0;
         visCards = new CardPanel[CARDS_SHOWN];
@@ -78,6 +82,32 @@ public class HandFrame extends JFrame {
         pack();
         setVisible(true);
         repaint();
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (e.getComponent() == HandFrame.this) {
+                    String info = e.paramString().split("\\(")[1].split("\\)")[0];
+                    int x = Integer.parseInt(info.split(",")[0]);
+                    int y = Integer.parseInt(info.split(",")[1].split(" ")[0]);
+                    int w = Integer.parseInt(info.split(" ")[1].split("x")[0]);
+                    int h = Integer.parseInt(info.split(" ")[1].split("x")[1]);
+                    GuiManager.getInstance().setHandFrameLoc(x, y, w, h);
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if (e.getComponent() == HandFrame.this) {
+                    String info = e.paramString().split("\\(")[1].split("\\)")[0];
+                    int x = Integer.parseInt(info.split(",")[0]);
+                    int y = Integer.parseInt(info.split(",")[1].split(" ")[0]);
+                    int w = Integer.parseInt(info.split(" ")[1].split("x")[0]);
+                    int h = Integer.parseInt(info.split(" ")[1].split("x")[1]);
+                    GuiManager.getInstance().setHandFrameLoc(x, y, w, h);
+                }
+            }
+        });
     }
 
     public void redrawHand() {
@@ -139,6 +169,7 @@ public class HandFrame extends JFrame {
             content.add(panel);
             if (card != null) {
                 panel.addMouseListener(new MouseAdapter() {
+                    // listener to change
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if (e.getButton() == MouseEvent.BUTTON1) {
